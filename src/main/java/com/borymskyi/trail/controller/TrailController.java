@@ -8,6 +8,13 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * REST controller for {@link Trail} connected requests.
+ *
+ * @author Dmitrii Borymskyi
+ * @version 1.0
+ */
+
 @RestController
 @RequestMapping("trail")
 public class TrailController {
@@ -32,11 +39,14 @@ public class TrailController {
     }
 
     @PostMapping
-    public void createTrail(@RequestBody Trail trail) {
-        trailService.createTrail(trail);
+    public void createTrail(
+            @RequestBody Trail trail,
+            @RequestParam Long profileId
+    ) {
+        trailService.createTrail(trail, profileId);
     }
 
-    @PutMapping("{id}/edit_trail")
+    @PutMapping("{id}/edit")
     public void editTrail(
             @RequestBody Trail trail,
             @PathVariable("id") Long idTrail
@@ -44,15 +54,15 @@ public class TrailController {
         trailService.editTrail(trail, idTrail);
     }
 
-    @PutMapping("{id}/update_date_trail")
+    @PutMapping("{id}/update_date")
     public void updateDateTrail(
             @PathVariable("id") Long idTrail
     ) {
         trailService.updateDateTrail(idTrail);
     }
 
-    @DeleteMapping("{id}")
+    @DeleteMapping("{id}/delete")
     public void deleteTrail(@PathVariable("id") Long idTrail) {
-        trailService.deleteOneTrail(idTrail);
+        trailService.deleteTrail(idTrail);
     }
 }

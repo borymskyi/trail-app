@@ -1,34 +1,33 @@
 package com.borymskyi.trail.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.Data;
+
+import javax.persistence.*;
 import java.time.LocalDateTime;
 
-public class Trail {
+/**
+ * JavaBean domain object that represents Trail.
+ *
+ * @author Dmitrii Borymskyi
+ * @version 1.0
+ */
 
+@Entity
+@Data
+public class Trail {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String title;
     private LocalDateTime update_time;
 
-    public Long getId() {
-        return id;
-    }
+    @ManyToOne
+    @JoinColumn(name = "profile")
+    @JsonIgnore
+    private Profile profile;
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public LocalDateTime getUpdate_time() {
-        return update_time;
-    }
-
-    public void setUpdate_time(LocalDateTime update_time) {
-        this.update_time = update_time;
+    public void replaceTitle (String str) {
+        this.setTitle(str);
     }
 }
