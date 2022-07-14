@@ -26,13 +26,12 @@ public class ProfileController {
 
     @GetMapping("{id}")
     public ResponseEntity<Profile> getProfile(@PathVariable("id") Long profileId) {
-        Profile profile = profileService.getProfileId(profileId);
-        return ResponseEntity.ok(profile);
+        return ResponseEntity.ok(profileService.getProfileId(profileId));
     }
 
     @PostMapping
-    public void create(@RequestBody Profile profile) {
-        profileService.createProfile(profile);
+    public ResponseEntity<Profile> create(@RequestBody Profile profile) {
+        return ResponseEntity.ok(profileService.createProfile(profile));
     }
 
     @DeleteMapping("{id}")

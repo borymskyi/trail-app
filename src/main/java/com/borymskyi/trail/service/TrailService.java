@@ -17,11 +17,11 @@ public interface TrailService {
 
     Trail getTrail(Long idTrail);
 
-    void createTrail(Trail trail, Long profileId);
+    Trail createTrail(Trail trail, Long profileId);
 
-    void editTrail(Trail trail, Long idTrail);
+    Trail editTrail(Trail trail, Long idTrail);
 
-    void updateDateTrail(Long idTrail);
+    Trail updateDateTrail(Long idTrail);
 
     void deleteTrail(Long idTrail);
 }

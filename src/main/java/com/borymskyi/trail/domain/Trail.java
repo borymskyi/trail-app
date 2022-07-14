@@ -1,5 +1,6 @@
 package com.borymskyi.trail.domain;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
@@ -20,6 +21,8 @@ public class Trail {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String title;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd, h:mm a")
     private LocalDateTime update_time;
 
     @ManyToOne

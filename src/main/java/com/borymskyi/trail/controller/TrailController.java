@@ -39,26 +39,27 @@ public class TrailController {
     }
 
     @PostMapping
-    public void createTrail(
+    public ResponseEntity<Trail> createTrail(
             @RequestBody Trail trail,
             @RequestParam Long profileId
     ) {
-        trailService.createTrail(trail, profileId);
+        return ResponseEntity.ok(trailService.createTrail(trail, profileId));
     }
 
     @PutMapping("{id}/edit")
-    public void editTrail(
+    public ResponseEntity<Trail> editTrail(
             @RequestBody Trail trail,
             @PathVariable("id") Long idTrail
     ) {
-        trailService.editTrail(trail, idTrail);
+        return ResponseEntity.ok(trailService.editTrail(trail, idTrail));
     }
 
+    //вернуть обновленный обьект
     @PutMapping("{id}/update_date")
-    public void updateDateTrail(
+    public ResponseEntity<Trail> updateDateTrail(
             @PathVariable("id") Long idTrail
     ) {
-        trailService.updateDateTrail(idTrail);
+        return ResponseEntity.ok(trailService.updateDateTrail(idTrail));
     }
 
     @DeleteMapping("{id}/delete")

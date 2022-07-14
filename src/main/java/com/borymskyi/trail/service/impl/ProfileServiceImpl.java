@@ -1,8 +1,9 @@
-package com.borymskyi.trail.service;
+package com.borymskyi.trail.service.impl;
 
 import com.borymskyi.trail.domain.Profile;
 import com.borymskyi.trail.exception.NotFoundException;
 import com.borymskyi.trail.repository.ProfileRepository;
+import com.borymskyi.trail.service.ProfileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,16 +26,12 @@ public class ProfileServiceImpl implements ProfileService {
 
     @Override
     public Profile getProfileId(Long profileId) {
-        if (profileRepository.findById(profileId).isPresent()) {
-            return profileRepository.findById(profileId).get();
-        } else {
-            throw new NotFoundException();
-        }
+        return profileRepository.findById(profileId).orElseThrow(NotFoundException::new);
     }
 
     @Override
-    public void createProfile(Profile profile) {
-        profileRepository.save(profile);
+    public Profile createProfile(Profile profile) {
+        return profileRepository.save(profile);
     }
 
     @Override
@@ -44,6 +41,5 @@ public class ProfileServiceImpl implements ProfileService {
         } else {
             throw new NotFoundException();
         }
-
     }
 }
