@@ -1,8 +1,11 @@
 package com.borymskyi.trail.domain;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -14,26 +17,20 @@ import java.util.List;
 
 @Entity
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class Profile {
-
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String name;
-    private String profilepic;
-    private String email;
+    private String username;
+    private String password;
 
     @OneToMany(mappedBy = "profile", cascade = CascadeType.REMOVE)
 //    @JsonIgnore
     private List<Trail> trails;
 
-    public void addTrail(Trail trail) {
-        this.trails.add(trail);
-        trail.setProfile(this);
-    }
-
-    public void removeTrail(Trail trail) {
-        this.trails.remove(trail);
-        trail.setProfile(null);
-    }
+    @ManyToMany(fetch = FetchType.EAGER)
+    private List<Role> roles = new ArrayList<>();
 }

@@ -10,4 +10,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * @version 1.0
  */
 public interface ProfileRepository extends JpaRepository<Profile, Long> {
+
+    Profile findByUsername(String username);
+
 }

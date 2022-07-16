@@ -26,11 +26,11 @@ public class TrailController {
         this.trailService = trailService;
     }
 
-    @GetMapping
-    public ResponseEntity<List<Trail>> getAllTrails() {
-        List<Trail> allTrails = trailService.getAllTrails();
-        return ResponseEntity.ok(allTrails);
-    }
+//    @GetMapping
+//    public ResponseEntity<List<Trail>> getAllTrails() {
+//        List<Trail> allTrails = trailService.getAllTrails();
+//        return ResponseEntity.ok(allTrails);
+//    }
 
     @GetMapping("{id}")
     public ResponseEntity<Trail> getTrail(@PathVariable("id") Long idTrail) {

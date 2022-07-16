@@ -1,6 +1,9 @@
 package com.borymskyi.trail.service;
 
 import com.borymskyi.trail.domain.Profile;
+import com.borymskyi.trail.domain.Role;
+
+import java.util.List;
 
 /**
  * Service interface for {@link Profile} class.
@@ -11,7 +14,11 @@ import com.borymskyi.trail.domain.Profile;
 
 public interface ProfileService {
 
-    Profile getProfileId(Long profileId);
+    List<Profile> getAllUsers();
+
+    void addRoleToProfile(String username, String rolename);
+
+    Profile getProfile(Long profileId);
 
     Profile createProfile(Profile profile);
 
