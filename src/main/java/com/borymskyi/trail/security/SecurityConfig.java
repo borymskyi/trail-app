@@ -31,11 +31,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final UserDetailsService userDetailsService;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
+    //проверка подленности юзера.
+    //после возвращает DAOauthentication чтобы разрешить настройку проверки.
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userDetailsService).passwordEncoder(bCryptPasswordEncoder);
     }
 
+    // configuring security
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         CustomAuthenticationFilter customAuthenticationFilter =
@@ -44,16 +47,30 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.csrf().disable();
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-        http.authorizeRequests().antMatchers("/api/sing-in/**").permitAll();
-        http.authorizeRequests().antMatchers(GET, "/api/profile/**")
-                .hasAnyAuthority("ROLE_USER");
-        http.authorizeRequests().antMatchers(POST, "/api/sign-up/**")
+
+        http.authorizeRequests().antMatchers(POST,"api/role/add/**")
+                .hasAnyAuthority("ROLE_USER")
+                .and()
+                .authorizeRequests().antMatchers(GET, "/api/profile/**")
+                .hasAnyAuthority("ROLE_USER")
+                .and()
+                .authorizeRequests().antMatchers("/api/sing-in/**", "/api/token/refresh/**", "/api/sign-up/**")
+                .permitAll()
+                .and()
+                .authorizeRequests().antMatchers("/**")
                 .hasAnyAuthority("ROLE_ADMIN");
+
         http.authorizeRequests().anyRequest().authenticated();
+
+        //обработка Authenticaiton. подтверждение личности, токен. username/password (sign-in)
         http.addFilter(customAuthenticationFilter);
-        http.addFilterBefore(new CustomAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class);
+
+        //обработка Authorization. доступ к данным/url и тд.
+        http.addFilterBefore(new CustomAuthorizationFilter(),
+                UsernamePasswordAuthenticationFilter.class);
     }
 
+    //Обработка запроса на вопрос кто ты (sign-in)
     @Bean
     @Override
     public AuthenticationManager authenticationManagerBean() throws Exception {

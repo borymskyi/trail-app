@@ -20,6 +20,8 @@ public interface ProfileService {
 
     Profile getProfile(Long profileId);
 
+    Profile getProfileByUsername(String username);
+
     Profile createProfile(Profile profile);
 
     void deleteProfile(Long profileId);

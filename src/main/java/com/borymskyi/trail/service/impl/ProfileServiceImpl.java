@@ -3,6 +3,7 @@ package com.borymskyi.trail.service.impl;
 import com.borymskyi.trail.domain.Profile;
 import com.borymskyi.trail.domain.Role;
 import com.borymskyi.trail.exception.NotFoundException;
+import com.borymskyi.trail.exception.ProfileAlreadyExists;
 import com.borymskyi.trail.repository.ProfileRepository;
 import com.borymskyi.trail.repository.RoleRepository;
 import com.borymskyi.trail.service.ProfileService;
@@ -43,19 +44,23 @@ public class ProfileServiceImpl implements ProfileService, UserDetailsService {
         this.passwordEncoder = passwordEncoder;
     }
 
+    // Проверяем юзера на Authentication + создаем UserDAO для класса securityConfig
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Profile profile = profileRepository.findByUsername(username);
+
         if (profile == null) {
-            log.error("User not found in the database!");
-            throw new UsernameNotFoundException("User not found in the db");
+            log.error("User not found in the database");
+            throw new UsernameNotFoundException("User not found in the database");
         } else {
             log.info("User found in the database with username: {}", profile.getUsername());
         }
+
         List<SimpleGrantedAuthority> authorities = new ArrayList<>();
         profile.getRoles().forEach(role -> {
             authorities.add(new SimpleGrantedAuthority(role.getName()));
         });
+
         return new User(profile.getUsername(), profile.getPassword(), authorities);
     }
 
@@ -66,10 +71,14 @@ public class ProfileServiceImpl implements ProfileService, UserDetailsService {
 
     @Override
     public Profile createProfile(Profile profile) {
+        if (profileRepository.findByUsername(profile.getUsername()) != null) {
+            throw new ProfileAlreadyExists();
+        }
         profile.setPassword(passwordEncoder.encode(profile.getPassword()));
 
         Profile newProfile = profileRepository.save(profile);
-        log.info("created a new profile with username: {}", newProfile.getUsername());
+        log.info("Created a new profile with username: {}", newProfile.getUsername());
+
         return newProfile;
     }
 
@@ -95,5 +104,15 @@ public class ProfileServiceImpl implements ProfileService, UserDetailsService {
 
         profile.getRoles().add(role);
         log.info("Add role {} to profile {}", rolename, username);
+    }
+
+    @Override
+    public Profile getProfileByUsername(String username) {
+        Profile profile = profileRepository.findByUsername(username);
+        if (profile == null) {
+            throw new NotFoundException();
+        }
+
+        return profile;
     }
 }
