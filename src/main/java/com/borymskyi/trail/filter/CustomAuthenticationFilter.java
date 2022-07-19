@@ -38,7 +38,6 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
         this.authenticationManager = authenticationManager;
     }
 
-    //вход данных от sign-in (аунтентификация).
     @Override
     public Authentication attemptAuthentication(
             HttpServletRequest request, HttpServletResponse response
@@ -54,7 +53,6 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
         return authenticationManager.authenticate(authenticationToken);
     }
 
-    //установка поведения успешной аунтентификации. Создание токена.
     @Override
     protected void successfulAuthentication(
             HttpServletRequest request, HttpServletResponse response,

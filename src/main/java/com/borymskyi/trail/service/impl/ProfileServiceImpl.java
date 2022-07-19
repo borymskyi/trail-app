@@ -44,7 +44,6 @@ public class ProfileServiceImpl implements ProfileService, UserDetailsService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    // Проверяем юзера на Authentication + создаем UserDAO для класса securityConfig
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Profile profile = profileRepository.findByUsername(username);
@@ -103,6 +102,7 @@ public class ProfileServiceImpl implements ProfileService, UserDetailsService {
         Role role = roleRepository.findByName(rolename);
 
         profile.getRoles().add(role);
+        profileRepository.save(profile);
         log.info("Add role {} to profile {}", rolename, username);
     }
 
