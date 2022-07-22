@@ -13,8 +13,6 @@ import java.util.List;
 
 public interface TrailService {
 
-    List<Trail> getAllTrails();
-
     Trail getTrail(Long idTrail);
 
     Trail createTrail(Trail trail, Long profileId);

@@ -16,7 +16,7 @@ import java.util.List;
  */
 
 @RestController
-@RequestMapping("trail")
+@RequestMapping("api/v1/trail")
 public class TrailController {
 
     private TrailService trailService;
@@ -24,18 +24,6 @@ public class TrailController {
     @Autowired
     public TrailController(TrailService trailService) {
         this.trailService = trailService;
-    }
-
-//    @GetMapping
-//    public ResponseEntity<List<Trail>> getAllTrails() {
-//        List<Trail> allTrails = trailService.getAllTrails();
-//        return ResponseEntity.ok(allTrails);
-//    }
-
-    @GetMapping("{id}")
-    public ResponseEntity<Trail> getTrail(@PathVariable("id") Long idTrail) {
-        Trail trail = trailService.getTrail(idTrail);
-        return ResponseEntity.ok(trail);
     }
 
     @PostMapping
@@ -46,6 +34,12 @@ public class TrailController {
         return ResponseEntity.ok(trailService.createTrail(trail, profileId));
     }
 
+    @GetMapping("{id}")
+    public ResponseEntity<Trail> getTrail(@PathVariable("id") Long idTrail) {
+        Trail trail = trailService.getTrail(idTrail);
+        return ResponseEntity.ok(trail);
+    }
+
     @PutMapping("{id}/edit")
     public ResponseEntity<Trail> editTrail(
             @RequestBody Trail trail,
@@ -54,7 +48,6 @@ public class TrailController {
         return ResponseEntity.ok(trailService.editTrail(trail, idTrail));
     }
 
-    //вернуть обновленный обьект
     @PutMapping("{id}/update_date")
     public ResponseEntity<Trail> updateDateTrail(
             @PathVariable("id") Long idTrail

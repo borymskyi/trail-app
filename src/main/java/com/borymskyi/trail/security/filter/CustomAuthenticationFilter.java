@@ -1,4 +1,4 @@
-package com.borymskyi.trail.filter;
+package com.borymskyi.trail.security.filter;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;

@@ -37,11 +37,6 @@ public class TrailServiceImpl implements TrailService {
     }
 
     @Override
-    public List<Trail> getAllTrails() {
-        return new ArrayList<>(trailRepository.findAll());
-    }
-
-    @Override
     public Trail getTrail(Long idTrail) {
         return trailRepository.findById(idTrail).orElseThrow(NotFoundException::new);
     }

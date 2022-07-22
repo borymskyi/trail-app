@@ -73,6 +73,7 @@ public class ProfileServiceImpl implements ProfileService, UserDetailsService {
         if (profileRepository.findByUsername(profile.getUsername()) != null) {
             throw new ProfileAlreadyExists();
         }
+
         profile.setPassword(passwordEncoder.encode(profile.getPassword()));
 
         Profile newProfile = profileRepository.save(profile);
@@ -100,10 +101,10 @@ public class ProfileServiceImpl implements ProfileService, UserDetailsService {
     public void addRoleToProfile(String username, String rolename) {
         Profile profile = profileRepository.findByUsername(username);
         Role role = roleRepository.findByName(rolename);
-
         profile.getRoles().add(role);
-        profileRepository.save(profile);
+
         log.info("Add role {} to profile {}", rolename, username);
+        profileRepository.save(profile);
     }
 
     @Override
