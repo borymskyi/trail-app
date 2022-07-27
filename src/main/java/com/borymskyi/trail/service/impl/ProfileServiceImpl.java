@@ -35,7 +35,7 @@ public class ProfileServiceImpl implements ProfileService, UserDetailsService {
 
     private ProfileRepository profileRepository;
     private RoleRepository roleRepository;
-    private final PasswordEncoder passwordEncoder;
+    private PasswordEncoder passwordEncoder;
 
     @Autowired
     public ProfileServiceImpl(ProfileRepository profileRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder) {

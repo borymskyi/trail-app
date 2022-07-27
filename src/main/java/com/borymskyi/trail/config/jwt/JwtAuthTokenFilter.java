@@ -1,14 +1,13 @@
-package com.borymskyi.trail.security.filter;
+package com.borymskyi.trail.config.jwt;
 
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.JWTVerifier;
-import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
@@ -30,16 +29,12 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
  * @author Dmitrii Borymskyi
  * @version 1.0
  */
+
 @Slf4j
-public class CustomAuthorizationFilter extends OncePerRequestFilter {
+public class JwtAuthTokenFilter extends OncePerRequestFilter {
 
-    public DecodedJWT decodeToken(String authorizationHeader) {
-        String token = authorizationHeader.substring("Bearer ".length());
-        Algorithm algorithm = Algorithm.HMAC256("awd".getBytes());
-        JWTVerifier verifier = JWT.require(algorithm).build();
-
-        return verifier.verify(token);
-    }
+    @Autowired
+    private JwtUtils jwtUtils;
 
     @Override
     protected void doFilterInternal(
@@ -49,13 +44,11 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
         String requestUrl = request.getServletPath();
         if (requestUrl.equals("/api/v1/sign-in") || requestUrl.equals("/api/v1/token/refresh")) {
             filterChain.doFilter(request, response);
-
         } else {
-
-            String authorizationHeader = request.getHeader(AUTHORIZATION);
-            if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+            String jwt = parseJwt(request);
+            if (jwt != null) {
                 try {
-                    DecodedJWT decodedJWT = decodeToken(authorizationHeader);
+                    DecodedJWT decodedJWT = jwtUtils.decodeToken(jwt);
 
                     UsernamePasswordAuthenticationToken authenticationToken = authenticationTokenForToSetting(decodedJWT);
 
@@ -63,23 +56,30 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
                     filterChain.doFilter(request, response);
                     log.info("Profile with username {} authorized successfully", decodedJWT.getSubject());
 
-                } catch (Exception exception) {
-                    log.error("Error logging in: {}", exception.getMessage());
+                } catch (Exception e) {
+                    log.error("Error logging in: {}", e.getMessage());
 
-                    response.setHeader("error", exception.getMessage());
+                    response.setHeader("error", e.getMessage());
                     response.setStatus(FORBIDDEN.value());
                     response.setContentType(APPLICATION_JSON_VALUE);
 
                     Map<String, String> error = new HashMap<>();
-                    error.put("error_message", exception.getMessage());
+                    error.put("error_message", e.getMessage());
 
                     new ObjectMapper().writeValue(response.getOutputStream(), error);
                 }
             } else {
                 filterChain.doFilter(request, response);
             }
-
         }
+    }
+
+    private String parseJwt(HttpServletRequest request) {
+        String jwt = request.getHeader(AUTHORIZATION);
+        if (StringUtils.hasText(jwt) && jwt.startsWith("Bearer ")) {
+            return jwt.substring("Bearer ".length());
+        }
+        return null;
     }
 
     private UsernamePasswordAuthenticationToken authenticationTokenForToSetting(DecodedJWT decodedJWT) {

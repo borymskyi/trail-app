@@ -1,10 +1,9 @@
 package com.borymskyi.trail.config;
 
-import com.borymskyi.trail.security.PasswordConfig;
+import com.borymskyi.trail.config.jwt.JwtUtils;
 import com.borymskyi.trail.security.filter.CustomAuthenticationFilter;
-import com.borymskyi.trail.security.filter.CustomAuthorizationFilter;
-import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
+import com.borymskyi.trail.config.jwt.JwtAuthTokenFilter;
+import com.borymskyi.trail.service.impl.ProfileServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,6 +15,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 /**
@@ -29,18 +29,26 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private static final String ADMIN_ENDPOINT = "/api/v1/admin/**";
 
-    private final UserDetailsService userDetailsService;
-    private final PasswordConfig passwordConfig;
+    @Autowired
+    private JwtUtils jwtUtils;
 
     @Autowired
-    public SecurityConfig(UserDetailsService userDetailsService, PasswordConfig passwordConfig) {
-        this.userDetailsService = userDetailsService;
-        this.passwordConfig = passwordConfig;
+    private ProfileServiceImpl profileService;
+
+    @Bean
+    public JwtAuthTokenFilter authenticationJwtTokenFilter() {
+        return new JwtAuthTokenFilter();
+    }
+
+    @Bean
+    @Override
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        return super.authenticationManagerBean();
     }
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService).passwordEncoder(passwordConfig.passwordEncoder());
+        auth.userDetailsService(profileService).passwordEncoder(jwtUtils.passwordEncoder());
     }
 
     @Override
@@ -70,13 +78,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.addFilter(customAuthenticationFilter);
 
-        http.addFilterBefore(new CustomAuthorizationFilter(),
-                UsernamePasswordAuthenticationFilter.class);
-    }
-
-    @Bean
-    @Override
-    public AuthenticationManager authenticationManagerBean() throws Exception {
-        return super.authenticationManagerBean();
+        http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
     }
 }
