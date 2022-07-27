@@ -37,8 +37,8 @@ public class JwtUtils {
         return new BCryptPasswordEncoder();
     }
 
-    public String generateJwtToken(User user, String requestUrl) {
-        String access_token = JWT.create()
+    public String generateJwt(User user, String requestUrl) {
+        return JWT.create()
                 .withSubject(user.getUsername())
                 .withExpiresAt(new Date(new Date().getTime() + jwtExpirationMs))
                 .withIssuer(requestUrl)
@@ -46,8 +46,14 @@ public class JwtUtils {
                                 .stream().map(GrantedAuthority::getAuthority)
                                 .collect(Collectors.toList()))
                 .sign(Algorithm.HMAC256(jwtSecret.getBytes()));
+    }
 
-        return access_token;
+    public String generateRefreshJwt(User user, String requestUrl) {
+        return JWT.create()
+                .withSubject(user.getUsername())
+                .withExpiresAt(new Date(new Date().getTime() + refreshJwtExpirationMs))
+                .withIssuer(requestUrl)
+                .sign(Algorithm.HMAC256(jwtSecret.getBytes()));
     }
 
     public DecodedJWT decodeToken(String jwt) {

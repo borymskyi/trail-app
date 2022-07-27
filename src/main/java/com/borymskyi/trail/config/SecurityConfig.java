@@ -1,7 +1,7 @@
 package com.borymskyi.trail.config;
 
 import com.borymskyi.trail.config.jwt.JwtUtils;
-import com.borymskyi.trail.security.filter.CustomAuthenticationFilter;
+import com.borymskyi.trail.config.jwt.CustomAuthenticationFilter;
 import com.borymskyi.trail.config.jwt.JwtAuthTokenFilter;
 import com.borymskyi.trail.service.impl.ProfileServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,9 +13,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 /**
@@ -54,7 +51,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         CustomAuthenticationFilter customAuthenticationFilter =
-                new CustomAuthenticationFilter(authenticationManagerBean());
+                new CustomAuthenticationFilter(authenticationManagerBean(), jwtUtils);
         customAuthenticationFilter.setFilterProcessesUrl("/api/v1/sign-in");
 
         http
