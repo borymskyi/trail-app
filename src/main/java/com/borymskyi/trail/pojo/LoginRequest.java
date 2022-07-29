@@ -1,10 +1,5 @@
 package com.borymskyi.trail.pojo;
 
-/**
- * @author Dmitrii Borymskyi
- * @version 1.0
- */
-
 public class LoginRequest {
 
     private String username;

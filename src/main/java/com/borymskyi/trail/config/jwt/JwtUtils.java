@@ -17,6 +17,8 @@ import java.util.Date;
 import java.util.stream.Collectors;
 
 /**
+ * Util class that provides methods for generation, validation, etc. of JWT token.
+ *
  * @author Dmitrii Borymskyi
  * @version 1.0
  */

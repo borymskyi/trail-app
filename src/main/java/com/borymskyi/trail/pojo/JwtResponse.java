@@ -3,10 +3,6 @@ package com.borymskyi.trail.pojo;
 import java.util.List;
 import java.util.Map;
 
-/**
- * @author Dmitrii Borymskyi
- * @version 1.0
- */
 public class JwtResponse {
 
     Map<String, String> tokens;

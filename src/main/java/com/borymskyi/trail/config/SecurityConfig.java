@@ -15,6 +15,8 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 /**
+ * Security configuration class for JWT based Spring Security application.
+ *
  * @author Dmitrii Borymskyi
  * @version 1.0
  */

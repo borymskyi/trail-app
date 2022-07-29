@@ -14,6 +14,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * Authentication filter, checks and processes requests.
+ *
  * @author Dmitrii Borymskyi
  * @version 1.0
  */

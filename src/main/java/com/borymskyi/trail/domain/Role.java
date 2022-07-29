@@ -10,6 +10,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 /**
+ * JavaBean domain object that represents Role.
+ *
  * @author Dmitrii Borymskyi
  * @version 1.0
  */

@@ -11,6 +11,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
+ * Spring Security wrapper for class {@link Profile}.
+ *
  * @author Dmitrii Borymskyi
  * @version 1.0
  */

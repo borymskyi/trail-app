@@ -25,6 +25,8 @@ import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 /**
+ * JWT token filter that handles all HTTP requests to application.
+ *
  * @author Dmitrii Borymskyi
  * @version 1.0
  */
@@ -35,16 +37,13 @@ public class JwtAuthTokenFilter extends OncePerRequestFilter {
     @Autowired
     private JwtUtils jwtUtils;
 
-    public UsernamePasswordAuthenticationToken authenticationTokenForToSetting(DecodedJWT decodedJWT) {
-        String username = decodedJWT.getSubject();
-        Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
-
-        String[] roles = decodedJWT.getClaim("roles").asArray(String.class);
-        stream(roles).forEach(role -> {
-            authorities.add(new SimpleGrantedAuthority(role));
-        });
-
-        return new UsernamePasswordAuthenticationToken(username, null, authorities);
+    public DecodedJWT refreshJwtFilter(String authorizationHeader) {
+        String refresh_token = jwtUtils.parseJwt(authorizationHeader);
+        if (refresh_token != null) {
+            return jwtUtils.decodeToken(refresh_token);
+        } else {
+            throw new RuntimeException("Refresh token is missing");
+        }
     }
 
     @Override
@@ -86,12 +85,15 @@ public class JwtAuthTokenFilter extends OncePerRequestFilter {
         }
     }
 
-    public DecodedJWT refreshJwtFilter(String authorizationHeader) {
-        String refresh_token = jwtUtils.parseJwt(authorizationHeader);
-        if (refresh_token != null) {
-            return jwtUtils.decodeToken(refresh_token);
-        } else {
-            throw new RuntimeException("Refresh token is missing");
-        }
+    private UsernamePasswordAuthenticationToken authenticationTokenForToSetting(DecodedJWT decodedJWT) {
+        String username = decodedJWT.getSubject();
+        Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
+
+        String[] roles = decodedJWT.getClaim("roles").asArray(String.class);
+        stream(roles).forEach(role -> {
+            authorities.add(new SimpleGrantedAuthority(role));
+        });
+
+        return new UsernamePasswordAuthenticationToken(username, null, authorities);
     }
 }

@@ -26,6 +26,13 @@ import java.util.Map;
 
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
+/**
+ * REST controller for authentication requests (sign-up, sign-in, etc.)
+ *
+ * @author Dmitrii Borymskyi
+ * @version 1.0
+ */
+
 @Slf4j
 @RestController
 @RequestMapping("api/v1")

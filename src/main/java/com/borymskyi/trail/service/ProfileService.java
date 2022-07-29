@@ -1,7 +1,6 @@
 package com.borymskyi.trail.service;
 
 import com.borymskyi.trail.domain.Profile;
-import com.borymskyi.trail.domain.Role;
 import com.borymskyi.trail.service.impl.UserDetailImpl;
 
 import java.util.List;

@@ -2,8 +2,6 @@ package com.borymskyi.trail.service;
 
 import com.borymskyi.trail.domain.Trail;
 
-import java.util.List;
-
 /**
  * Service interface for {@link Trail} class.
  *
