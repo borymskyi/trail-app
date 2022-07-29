@@ -85,4 +85,13 @@ public class JwtAuthTokenFilter extends OncePerRequestFilter {
             }
         }
     }
+
+    public DecodedJWT refreshJwtFilter(String authorizationHeader) {
+        String refresh_token = jwtUtils.parseJwt(authorizationHeader);
+        if (refresh_token != null) {
+            return jwtUtils.decodeToken(refresh_token);
+        } else {
+            throw new RuntimeException("Refresh token is missing");
+        }
+    }
 }

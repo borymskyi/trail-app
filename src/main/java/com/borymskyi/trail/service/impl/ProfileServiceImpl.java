@@ -57,6 +57,20 @@ public class ProfileServiceImpl implements ProfileService, UserDetailsService {
     }
 
     @Override
+    public UserDetailImpl getUserDetail(String username) {
+        Profile profile = profileRepository.findByUsername(username);
+
+        if (profile == null) {
+            log.error("User not found in the database");
+            throw new UsernameNotFoundException("User not found in the database");
+        } else {
+            log.info("User found in the database with username: {}", profile.getUsername());
+        }
+
+        return UserDetailImpl.build(profile);
+    }
+
+    @Override
     public Profile getProfile(Long profileId) {
         return profileRepository.findById(profileId).orElseThrow(NotFoundException::new);
     }

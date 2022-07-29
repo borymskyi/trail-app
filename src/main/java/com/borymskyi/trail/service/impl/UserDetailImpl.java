@@ -99,7 +99,7 @@ public class UserDetailImpl implements UserDetails {
         this.authorities = authorities;
     }
 
-    public List<String> getRoles() {
+    public List<String> getListRoles() {
         return authorities.stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList());
     }
 

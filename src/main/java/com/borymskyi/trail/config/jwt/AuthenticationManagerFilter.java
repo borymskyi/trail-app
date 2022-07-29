@@ -51,7 +51,7 @@ public class AuthenticationManagerFilter {
                 tokens,
                 userDetails.getId(),
                 userDetails.getUsername(),
-                userDetails.getRoles());
+                userDetails.getListRoles());
     }
 
 }
