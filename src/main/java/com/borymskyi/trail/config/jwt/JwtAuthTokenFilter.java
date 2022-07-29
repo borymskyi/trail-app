@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
@@ -36,6 +35,18 @@ public class JwtAuthTokenFilter extends OncePerRequestFilter {
     @Autowired
     private JwtUtils jwtUtils;
 
+    public UsernamePasswordAuthenticationToken authenticationTokenForToSetting(DecodedJWT decodedJWT) {
+        String username = decodedJWT.getSubject();
+        Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
+
+        String[] roles = decodedJWT.getClaim("roles").asArray(String.class);
+        stream(roles).forEach(role -> {
+            authorities.add(new SimpleGrantedAuthority(role));
+        });
+
+        return new UsernamePasswordAuthenticationToken(username, null, authorities);
+    }
+
     @Override
     protected void doFilterInternal(
             HttpServletRequest request, HttpServletResponse response, FilterChain filterChain
@@ -45,7 +56,8 @@ public class JwtAuthTokenFilter extends OncePerRequestFilter {
         if (requestUrl.equals("/api/v1/sign-in") || requestUrl.equals("/api/v1/token/refresh")) {
             filterChain.doFilter(request, response);
         } else {
-            String jwt = parseJwt(request);
+
+            String jwt = jwtUtils.parseJwt(request.getHeader(AUTHORIZATION));
             if (jwt != null) {
                 try {
                     DecodedJWT decodedJWT = jwtUtils.decodeToken(jwt);
@@ -73,25 +85,4 @@ public class JwtAuthTokenFilter extends OncePerRequestFilter {
             }
         }
     }
-
-    private String parseJwt(HttpServletRequest request) {
-        String jwt = request.getHeader(AUTHORIZATION);
-        if (StringUtils.hasText(jwt) && jwt.startsWith("Bearer ")) {
-            return jwt.substring("Bearer ".length());
-        }
-        return null;
-    }
-
-    private UsernamePasswordAuthenticationToken authenticationTokenForToSetting(DecodedJWT decodedJWT) {
-        String username = decodedJWT.getSubject();
-        Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
-
-        String[] roles = decodedJWT.getClaim("roles").asArray(String.class);
-        stream(roles).forEach(role -> {
-            authorities.add(new SimpleGrantedAuthority(role));
-        });
-
-        return new UsernamePasswordAuthenticationToken(username, null, authorities);
-    }
-
 }

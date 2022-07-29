@@ -1,8 +1,7 @@
 package com.borymskyi.trail.config;
 
-import com.borymskyi.trail.config.jwt.JwtUtils;
-import com.borymskyi.trail.config.jwt.CustomAuthenticationFilter;
 import com.borymskyi.trail.config.jwt.JwtAuthTokenFilter;
+import com.borymskyi.trail.config.jwt.JwtUtils;
 import com.borymskyi.trail.service.impl.ProfileServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -50,10 +49,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        CustomAuthenticationFilter customAuthenticationFilter =
-                new CustomAuthenticationFilter(authenticationManagerBean(), jwtUtils);
-        customAuthenticationFilter.setFilterProcessesUrl("/api/v1/sign-in");
-
         http
                 .httpBasic().disable()
                 .csrf().disable()
@@ -72,8 +67,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 ).hasAnyAuthority("ROLE_USER", "ROLE_ADMIN")
                 .antMatchers(ADMIN_ENDPOINT).hasAnyAuthority("ROLE_ADMIN")
                 .anyRequest().authenticated();
-
-        http.addFilter(customAuthenticationFilter);
 
         http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
     }

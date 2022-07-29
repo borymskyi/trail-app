@@ -4,13 +4,14 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.borymskyi.trail.service.impl.UserDetailImpl;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import java.util.Date;
 import java.util.stream.Collectors;
@@ -37,22 +38,20 @@ public class JwtUtils {
         return new BCryptPasswordEncoder();
     }
 
-    public String generateJwt(User user, String requestUrl) {
+    public String generateJwt(UserDetailImpl userDetail) {
         return JWT.create()
-                .withSubject(user.getUsername())
+                .withSubject(userDetail.getUsername())
                 .withExpiresAt(new Date(new Date().getTime() + jwtExpirationMs))
-                .withIssuer(requestUrl)
-                .withClaim("roles", user.getAuthorities()
+                .withClaim("roles", userDetail.getAuthorities()
                                 .stream().map(GrantedAuthority::getAuthority)
                                 .collect(Collectors.toList()))
                 .sign(Algorithm.HMAC256(jwtSecret.getBytes()));
     }
 
-    public String generateRefreshJwt(User user, String requestUrl) {
+    public String generateRefreshJwt(UserDetailImpl userDetail) {
         return JWT.create()
-                .withSubject(user.getUsername())
+                .withSubject(userDetail.getUsername())
                 .withExpiresAt(new Date(new Date().getTime() + refreshJwtExpirationMs))
-                .withIssuer(requestUrl)
                 .sign(Algorithm.HMAC256(jwtSecret.getBytes()));
     }
 
@@ -66,5 +65,12 @@ public class JwtUtils {
             System.out.println(e.getMessage());
             throw new RuntimeException("Jwt validate error");
         }
+    }
+
+    public String parseJwt(String authorizationHeader) {
+        if (StringUtils.hasText(authorizationHeader) && authorizationHeader.startsWith("Bearer ")) {
+            return authorizationHeader.substring("Bearer ".length());
+        }
+        return null;
     }
 }

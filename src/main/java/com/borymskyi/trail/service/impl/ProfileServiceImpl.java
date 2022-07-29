@@ -9,8 +9,6 @@ import com.borymskyi.trail.repository.RoleRepository;
 import com.borymskyi.trail.service.ProfileService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -18,7 +16,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -38,7 +35,8 @@ public class ProfileServiceImpl implements ProfileService, UserDetailsService {
     private PasswordEncoder passwordEncoder;
 
     @Autowired
-    public ProfileServiceImpl(ProfileRepository profileRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder) {
+    public ProfileServiceImpl(ProfileRepository profileRepository, RoleRepository roleRepository,
+                              PasswordEncoder passwordEncoder) {
         this.profileRepository = profileRepository;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
@@ -55,12 +53,7 @@ public class ProfileServiceImpl implements ProfileService, UserDetailsService {
             log.info("User found in the database with username: {}", profile.getUsername());
         }
 
-        List<SimpleGrantedAuthority> authorities = new ArrayList<>();
-        profile.getRoles().forEach(role -> {
-            authorities.add(new SimpleGrantedAuthority(role.getName()));
-        });
-
-        return new User(profile.getUsername(), profile.getPassword(), authorities);
+        return UserDetailImpl.build(profile);
     }
 
     @Override

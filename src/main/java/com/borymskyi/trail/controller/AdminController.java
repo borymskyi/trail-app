@@ -1,7 +1,7 @@
 package com.borymskyi.trail.controller;
 
 import com.borymskyi.trail.domain.Role;
-import com.borymskyi.trail.dto.RoleToUserForm;
+import com.borymskyi.trail.pojo.RoleToUserForm;
 import com.borymskyi.trail.service.ProfileService;
 import com.borymskyi.trail.service.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
