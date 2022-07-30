@@ -35,7 +35,7 @@ public class AdminController {
     }
 
     @PostMapping("/role/new")
-    public ResponseEntity<Role> registration(@RequestBody Role role) {
+    public ResponseEntity<Role> createrole(@RequestBody Role role) {
         URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/role/save").toUriString());
 
         return ResponseEntity.created(uri).body(roleService.saveRole(role));

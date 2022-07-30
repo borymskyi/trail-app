@@ -1,10 +1,16 @@
 package com.borymskyi.trail.controller;
 
+import com.borymskyi.trail.config.jwt.JwtUtils;
 import com.borymskyi.trail.domain.Trail;
+import com.borymskyi.trail.pojo.UserResponse;
+import com.borymskyi.trail.service.ProfileService;
 import com.borymskyi.trail.service.TrailService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * REST controller for {@link Trail} connected requests.
@@ -18,18 +24,25 @@ import org.springframework.web.bind.annotation.*;
 public class TrailController {
 
     private TrailService trailService;
+    private ProfileService profileService;
+    private JwtUtils jwtUtils;
 
     @Autowired
-    public TrailController(TrailService trailService) {
+    public TrailController(TrailService trailService, ProfileService profileService, JwtUtils jwtUtils) {
         this.trailService = trailService;
+        this.profileService = profileService;
+        this.jwtUtils = jwtUtils;
     }
 
     @PostMapping
-    public ResponseEntity<Trail> createTrail(
-            @RequestBody Trail trail,
-            @RequestParam Long profileId
-    ) {
-        return ResponseEntity.ok(trailService.createTrail(trail, profileId));
+    public ResponseEntity<Trail> createTrail(@RequestBody Trail trail, HttpServletRequest request) {
+        UserResponse userResponse = UserResponse.buildUserResponse(
+                profileService.getProfileByUsername(
+                        jwtUtils.getUsernameByJwt(request.getHeader(HttpHeaders.AUTHORIZATION))
+                )
+        );
+
+        return ResponseEntity.ok(trailService.createTrail(trail, userResponse.getId()));
     }
 
     @GetMapping("{id}")

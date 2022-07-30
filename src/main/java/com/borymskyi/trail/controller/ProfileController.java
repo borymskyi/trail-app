@@ -1,10 +1,16 @@
 package com.borymskyi.trail.controller;
 
+import com.borymskyi.trail.config.jwt.JwtUtils;
 import com.borymskyi.trail.domain.Profile;
+import com.borymskyi.trail.pojo.UserResponse;
 import com.borymskyi.trail.service.ProfileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
+
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 /**
  * REST controller for {@link Profile} connected requests.
@@ -18,24 +24,22 @@ import org.springframework.web.bind.annotation.*;
 public class ProfileController {
 
     private ProfileService profileService;
+    private JwtUtils jwtUtils;
 
     @Autowired
-    public ProfileController(ProfileService profileService) {
+    public ProfileController(ProfileService profileService, JwtUtils jwtUtils) {
         this.profileService = profileService;
+        this.jwtUtils = jwtUtils;
     }
 
-    @GetMapping("{id}")
-    public ResponseEntity<Profile> getProfile(@PathVariable("id") Long profileId) {
-        return ResponseEntity.ok(profileService.getProfile(profileId));
-    }
+    @GetMapping
+    public ResponseEntity<?> getProfile(HttpServletRequest request) {
+        UserResponse userResponse = UserResponse.buildUserResponse(
+                profileService.getProfileByUsername(
+                        jwtUtils.getUsernameByJwt(request.getHeader(AUTHORIZATION))
+                )
+        );
 
-    @PostMapping
-    public ResponseEntity<Profile> create(@RequestBody Profile profile) {
-        return ResponseEntity.ok(profileService.createProfile(profile));
-    }
-
-    @DeleteMapping("{id}")
-    public void delete(@PathVariable("id") Long profileId) {
-        profileService.deleteProfile(profileId);
+        return ResponseEntity.ok(userResponse);
     }
 }

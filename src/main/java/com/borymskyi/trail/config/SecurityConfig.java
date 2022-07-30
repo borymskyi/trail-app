@@ -1,6 +1,7 @@
 package com.borymskyi.trail.config;
 
 import com.borymskyi.trail.config.jwt.JwtAuthTokenFilter;
+import com.borymskyi.trail.config.jwt.JwtUserDetailsService;
 import com.borymskyi.trail.config.jwt.JwtUtils;
 import com.borymskyi.trail.service.impl.ProfileServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +32,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private JwtUtils jwtUtils;
 
     @Autowired
-    private ProfileServiceImpl profileService;
+    private JwtUserDetailsService jwtUserDetailsService;
 
     @Bean
     public JwtAuthTokenFilter authenticationJwtTokenFilter() {
@@ -46,7 +47,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(profileService).passwordEncoder(jwtUtils.passwordEncoder());
+        auth.userDetailsService(jwtUserDetailsService).passwordEncoder(jwtUtils.passwordEncoder());
     }
 
     @Override
@@ -60,8 +61,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(
                         "/api/v1/sign-up",
                         "/api/v1/sign-in",
-                        "/api/v1/token/refresh",
-                        "/api/v1/users"
+                        "/api/v1/token/refresh"
                 ).permitAll()
                 .antMatchers(
                         "/api/v1/profile**",

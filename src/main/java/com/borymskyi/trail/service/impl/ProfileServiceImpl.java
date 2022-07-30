@@ -4,6 +4,7 @@ import com.borymskyi.trail.domain.Profile;
 import com.borymskyi.trail.domain.Role;
 import com.borymskyi.trail.exception.NotFoundException;
 import com.borymskyi.trail.exception.ProfileAlreadyExists;
+import com.borymskyi.trail.pojo.SignupRequest;
 import com.borymskyi.trail.repository.ProfileRepository;
 import com.borymskyi.trail.repository.RoleRepository;
 import com.borymskyi.trail.service.ProfileService;
@@ -16,6 +17,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -28,7 +30,7 @@ import java.util.List;
 @Service
 @Transactional
 @Slf4j
-public class ProfileServiceImpl implements ProfileService, UserDetailsService {
+public class ProfileServiceImpl implements ProfileService {
 
     private ProfileRepository profileRepository;
     private RoleRepository roleRepository;
@@ -40,20 +42,6 @@ public class ProfileServiceImpl implements ProfileService, UserDetailsService {
         this.profileRepository = profileRepository;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
-    }
-
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Profile profile = profileRepository.findByUsername(username);
-
-        if (profile == null) {
-            log.error("User not found in the database");
-            throw new UsernameNotFoundException("User not found in the database");
-        } else {
-            log.info("User found in the database with username: {}", profile.getUsername());
-        }
-
-        return UserDetailImpl.build(profile);
     }
 
     @Override
@@ -76,17 +64,31 @@ public class ProfileServiceImpl implements ProfileService, UserDetailsService {
     }
 
     @Override
-    public Profile createProfile(Profile profile) {
-        if (profileRepository.findByUsername(profile.getUsername()) != null) {
+    public Profile getProfileByUsername(String username) {
+        try {
+            Profile profile = profileRepository.findByUsername(username);
+            log.info("User found in the database with username: {}", profile.getUsername());
+            return profile;
+        } catch (Exception e) {
+            log.error("User " + username + " not found in the database");
+            throw new UsernameNotFoundException("User not found");
+        }
+    }
+
+    @Override
+    public void createProfile(SignupRequest signupRequest) {
+        if (profileRepository.findByUsername(signupRequest.getUsername()) != null) {
             throw new ProfileAlreadyExists();
         }
 
+        Profile profile = new Profile(null, signupRequest.getName(), signupRequest.getUsername(),
+                signupRequest.getPassword(), null, null
+        );
         profile.setPassword(passwordEncoder.encode(profile.getPassword()));
+        profile.getRoles().add(roleRepository.findByName("ROLE_USER"));
 
         Profile newProfile = profileRepository.save(profile);
         log.info("Created a new profile with username: {}", newProfile.getUsername());
-
-        return newProfile;
     }
 
     @Override
@@ -112,15 +114,5 @@ public class ProfileServiceImpl implements ProfileService, UserDetailsService {
 
         log.info("Add role {} to profile {}", rolename, username);
         profileRepository.save(profile);
-    }
-
-    @Override
-    public Profile getProfileByUsername(String username) {
-        Profile profile = profileRepository.findByUsername(username);
-        if (profile == null) {
-            throw new NotFoundException();
-        }
-
-        return profile;
     }
 }

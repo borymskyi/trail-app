@@ -5,12 +5,12 @@ import com.borymskyi.trail.config.jwt.AuthenticationManagerFilter;
 import com.borymskyi.trail.config.jwt.JwtAuthTokenFilter;
 import com.borymskyi.trail.config.jwt.JwtUtils;
 import com.borymskyi.trail.domain.Profile;
-import com.borymskyi.trail.pojo.JwtResponse;
-import com.borymskyi.trail.pojo.LoginRequest;
+import com.borymskyi.trail.pojo.*;
 import com.borymskyi.trail.service.ProfileService;
 import com.borymskyi.trail.service.impl.UserDetailImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -52,23 +52,28 @@ public class MainController {
     }
 
     @PostMapping("/sign-up")
-    public ResponseEntity<Profile> registration(@RequestBody Profile profile) {
+    public ResponseEntity<?> registration(@RequestBody SignupRequest signupRequest) {
+        profileService.createProfile(signupRequest);
+        UserResponse userResponse = UserResponse.buildUserResponse(
+                profileService.getProfileByUsername(signupRequest.getUsername())
+        );
         URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/sign-up").toUriString());
 
-        return ResponseEntity.created(uri).body(profileService.createProfile(profile));
+        return ResponseEntity.created(uri).body(userResponse);
     }
 
     @PostMapping("/sign-in")
     public ResponseEntity<?> authUser(@RequestBody LoginRequest loginRequest) {
-
-        Authentication authentication = authenticationManagerFilter.authenticationAttempt(
-                loginRequest.getUsername(),
-                loginRequest.getPassword()
-        );
-
-        JwtResponse jwtResponse = authenticationManagerFilter.handlingSuccessfulAuthentication(authentication);
-
-        return ResponseEntity.ok(jwtResponse);
+        try {
+            Authentication authentication = authenticationManagerFilter.authenticationAttempt(
+                    loginRequest.getUsername(),
+                    loginRequest.getPassword()
+            );
+            JwtResponse jwtResponse = authenticationManagerFilter.handlingSuccessfulAuthentication(authentication);
+            return ResponseEntity.ok(jwtResponse);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(new MessageResponse("Error: Username not found"));
+        }
     }
 
     @GetMapping("/token/refresh")
@@ -89,10 +94,5 @@ public class MainController {
                 userDetail.getId(),
                 userDetail.getUsername(),
                 userDetail.getListRoles()));
-    }
-
-    @GetMapping("/users")
-    public ResponseEntity<List<Profile>> getAllUsers() {
-        return ResponseEntity.ok().body(profileService.getAllUsers());
     }
 }

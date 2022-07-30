@@ -13,8 +13,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 import java.util.stream.Collectors;
+
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 /**
  * Util class that provides methods for generation, validation, etc. of JWT token.
@@ -74,5 +77,11 @@ public class JwtUtils {
             return authorizationHeader.substring("Bearer ".length());
         }
         return null;
+    }
+
+    public String getUsernameByJwt(String authorizationHeader) {
+        String userJwt = parseJwt(authorizationHeader);
+        DecodedJWT decodedJWT = decodeToken(userJwt);
+        return decodedJWT.getSubject();
     }
 }

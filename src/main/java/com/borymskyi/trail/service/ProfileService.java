@@ -1,6 +1,7 @@
 package com.borymskyi.trail.service;
 
 import com.borymskyi.trail.domain.Profile;
+import com.borymskyi.trail.pojo.SignupRequest;
 import com.borymskyi.trail.service.impl.UserDetailImpl;
 
 import java.util.List;
@@ -22,7 +23,7 @@ public interface ProfileService {
 
     Profile getProfileByUsername(String username);
 
-    Profile createProfile(Profile profile);
+    void createProfile(SignupRequest signupRequest);
 
     void deleteProfile(Long profileId);
 
