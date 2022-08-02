@@ -1,9 +1,9 @@
 package com.borymskyi.trail.service.impl;
 
-import com.borymskyi.trail.domain.Role;
+import com.borymskyi.trail.domain.Roles;
+import com.borymskyi.trail.exception.NotFoundException;
 import com.borymskyi.trail.repository.RoleRepository;
 import com.borymskyi.trail.service.RoleService;
-import com.borymskyi.trail.service.TrailService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,7 +28,26 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public Role saveRole(Role role) {
+    public Roles saveRole(Roles role) {
         return roleRepository.save(role);
+    }
+
+    @Override
+    public Roles getRoleByName(String name) {
+        try {
+            return roleRepository.findByName(name);
+        } catch (Exception e) {
+            log.error("Role with name:" + name + " not found");
+            throw new NotFoundException();
+        }
+    }
+
+    public void deleteRoleByName(String name) {
+        try {
+            roleRepository.deleteById(roleRepository.findByName(name).getId_r());
+        } catch (Exception e) {
+            log.error("Role with name: " + name + "not found");
+            throw new NotFoundException();
+        }
     }
 }

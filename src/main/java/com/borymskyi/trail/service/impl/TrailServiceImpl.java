@@ -1,19 +1,18 @@
 package com.borymskyi.trail.service.impl;
 
-import com.borymskyi.trail.domain.Trail;
+import com.borymskyi.trail.domain.Trails;
 import com.borymskyi.trail.exception.NotFoundException;
-import com.borymskyi.trail.repository.ProfileRepository;
+import com.borymskyi.trail.pojo.TrailRequest;
+import com.borymskyi.trail.repository.UserRepository;
 import com.borymskyi.trail.repository.TrailRepository;
 import com.borymskyi.trail.service.TrailService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Implementations of {@link TrailService} interface.
@@ -28,45 +27,57 @@ import java.util.List;
 public class TrailServiceImpl implements TrailService {
 
     private TrailRepository trailRepository;
-    private ProfileRepository profileRepository;
+    private UserRepository userRepository;
 
     @Autowired
-    public TrailServiceImpl(TrailRepository trailRepository, ProfileRepository profileRepository) {
+    public TrailServiceImpl(TrailRepository trailRepository, UserRepository profileRepository) {
         this.trailRepository = trailRepository;
-        this.profileRepository = profileRepository;
+        this.userRepository = profileRepository;
     }
 
     @Override
-    public Trail getTrail(Long idTrail) {
+    public Trails getTrail(Long idTrail) {
         return trailRepository.findById(idTrail).orElseThrow(NotFoundException::new);
     }
 
     @Override
-    public Trail createTrail(Trail trail, Long profileId) {
-        if (profileRepository.findById(profileId).isPresent()) {
-            trail.setProfile(profileRepository.findById(profileId).get());
-            trail.setUpdate_time(LocalDateTime.now());
-            return trailRepository.save(trail);
+    public Trails createTrail(TrailRequest trailRequest, Long userId) {
+        if (trailRequest.getTitle() != null && !trailRequest.getTitle().equals("")) {
+            if (userRepository.findById(userId).isPresent()) {
+                Trails trail = new Trails(null, trailRequest.getTitle(), null, null);
+                trail.setProfile(userRepository.findById(userId).get());
+                trail.setUpdate_time(LocalDateTime.now());
+                return trailRepository.save(trail);
+            } else {
+                log.error("User with id: " + userId + "not found");
+                throw new UsernameNotFoundException("User with id: " + userId + "not found");
+            }
         } else {
-            throw new NotFoundException();
+            log.error("bad request, title: " + trailRequest.getTitle());
+            throw new RuntimeException("Invalid title: " + trailRequest.getTitle());
         }
     }
 
     @Override
-    public Trail editTrail(Trail trail, Long idTrail) {
-        if (trailRepository.findById(idTrail).isPresent()) {
-            Trail editTrail = trailRepository.findById(idTrail).get();
-            editTrail.setTitle(trail.getTitle());
+    public Trails editTrail(TrailRequest trailRequest, Long idTrail) {
+        if (trailRequest.getTitle() != null && !trailRequest.getTitle().equals("")) {
+            if (trailRepository.findById(idTrail).isPresent()) {
+                Trails editTrail = trailRepository.findById(idTrail).get();
+                editTrail.setTitle(trailRequest.getTitle());
 
-            return trailRepository.save(editTrail);
+                return trailRepository.save(editTrail);
+            } else {
+                throw new NotFoundException();
+            }
         } else {
-            throw new NotFoundException();
+            log.error("bad request, title: " + trailRequest.getTitle());
+            throw new RuntimeException("Invalid title: " + trailRequest.getTitle());
         }
     }
 
     @Override
-    public Trail updateDateTrail(Long idTrail) {
-        Trail trail = trailRepository.findById(idTrail).orElseThrow(NotFoundException::new);
+    public Trails updateDateTrail(Long idTrail) {
+        Trails trail = trailRepository.findById(idTrail).orElseThrow(NotFoundException::new);
         trail.setUpdate_time(LocalDateTime.now());
         return trailRepository.save(trail);
     }
@@ -75,7 +86,9 @@ public class TrailServiceImpl implements TrailService {
     public void deleteTrail(Long idTrail) {
         if (trailRepository.findById(idTrail).isPresent()) {
             trailRepository.deleteById(idTrail);
+            log.info("trail with id: " + idTrail + " is removed");
         } else {
+            log.error("trail not found with id: " + idTrail);
             throw new NotFoundException();
         }
     }

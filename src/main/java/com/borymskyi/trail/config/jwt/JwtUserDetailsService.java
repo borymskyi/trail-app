@@ -1,7 +1,7 @@
 package com.borymskyi.trail.config.jwt;
 
-import com.borymskyi.trail.domain.Profile;
-import com.borymskyi.trail.service.ProfileService;
+import com.borymskyi.trail.domain.Users;
+import com.borymskyi.trail.service.UserService;
 import com.borymskyi.trail.service.impl.UserDetailImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,16 +19,16 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class JwtUserDetailsService implements UserDetailsService {
 
-    private final ProfileService profileService;
+    private final UserService profileService;
 
     @Autowired
-    public JwtUserDetailsService(ProfileService profileService) {
+    public JwtUserDetailsService(UserService profileService) {
         this.profileService = profileService;
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Profile profile = profileService.getProfileByUsername(username);
+        Users profile = profileService.getUserByUsername(username);
         return UserDetailImpl.build(profile);
     }
 }

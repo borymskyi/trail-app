@@ -1,8 +1,8 @@
 package com.borymskyi.trail.pojo;
 
-import com.borymskyi.trail.domain.Profile;
-import com.borymskyi.trail.domain.Role;
-import com.borymskyi.trail.domain.Trail;
+import com.borymskyi.trail.domain.Users;
+import com.borymskyi.trail.domain.Roles;
+import com.borymskyi.trail.domain.Trails;
 
 import java.util.List;
 
@@ -16,23 +16,20 @@ import java.util.List;
 public class UserResponse {
 
     private Long id;
-    private String name;
     private String username;
-    private List<Trail> trails;
-    private List<Role> roles;
+    private List<Trails> trails;
+    private List<Roles> roles;
 
-    public UserResponse(Long id, String name, String username, List<Trail> trails, List<Role> roles) {
+    public UserResponse(Long id, String username, List<Trails> trails, List<Roles> roles) {
         this.id = id;
-        this.name = name;
         this.username = username;
         this.trails = trails;
         this.roles = roles;
     }
 
-    public static UserResponse buildUserResponse(Profile profile) {
+    public static UserResponse buildUserResponse(Users profile) {
         return new UserResponse(
-                profile.getId(),
-                profile.getName(),
+                profile.getId_u(),
                 profile.getUsername(),
                 profile.getTrails(),
                 profile.getRoles()
@@ -47,14 +44,6 @@ public class UserResponse {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public String getUsername() {
         return username;
     }
@@ -63,19 +52,19 @@ public class UserResponse {
         this.username = username;
     }
 
-    public List<Trail> getTrails() {
+    public List<Trails> getTrails() {
         return trails;
     }
 
-    public void setTrails(List<Trail> trails) {
+    public void setTrails(List<Trails> trails) {
         this.trails = trails;
     }
 
-    public List<Role> getRoles() {
+    public List<Roles> getRoles() {
         return roles;
     }
 
-    public void setRoles(List<Role> roles) {
+    public void setRoles(List<Roles> roles) {
         this.roles = roles;
     }
 }

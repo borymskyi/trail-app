@@ -1,9 +1,11 @@
 package com.borymskyi.trail.controller;
 
 import com.borymskyi.trail.config.jwt.JwtUtils;
-import com.borymskyi.trail.domain.Trail;
+import com.borymskyi.trail.domain.Trails;
+import com.borymskyi.trail.pojo.MessageResponse;
+import com.borymskyi.trail.pojo.TrailRequest;
 import com.borymskyi.trail.pojo.UserResponse;
-import com.borymskyi.trail.service.ProfileService;
+import com.borymskyi.trail.service.UserService;
 import com.borymskyi.trail.service.TrailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -13,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 
 /**
- * REST controller for {@link Trail} connected requests.
+ * REST controller for {@link Trails} connected requests.
  *
  * @author Dmitrii Borymskyi
  * @version 1.0
@@ -24,50 +26,67 @@ import javax.servlet.http.HttpServletRequest;
 public class TrailController {
 
     private TrailService trailService;
-    private ProfileService profileService;
+    private UserService profileService;
     private JwtUtils jwtUtils;
 
     @Autowired
-    public TrailController(TrailService trailService, ProfileService profileService, JwtUtils jwtUtils) {
+    public TrailController(TrailService trailService, UserService profileService, JwtUtils jwtUtils) {
         this.trailService = trailService;
         this.profileService = profileService;
         this.jwtUtils = jwtUtils;
     }
 
     @PostMapping
-    public ResponseEntity<Trail> createTrail(@RequestBody Trail trail, HttpServletRequest request) {
-        UserResponse userResponse = UserResponse.buildUserResponse(
-                profileService.getProfileByUsername(
-                        jwtUtils.getUsernameByJwt(request.getHeader(HttpHeaders.AUTHORIZATION))
-                )
-        );
+    public ResponseEntity<?> createTrail(@RequestBody TrailRequest trailRequest, HttpServletRequest request) {
+        try {
+            UserResponse userResponse = UserResponse.buildUserResponse(
+                    profileService.getUserByUsername(
+                            jwtUtils.getUsernameByJwt(request.getHeader(HttpHeaders.AUTHORIZATION))
+                    )
+            );
 
-        return ResponseEntity.ok(trailService.createTrail(trail, userResponse.getId()));
+            return ResponseEntity.ok(trailService.createTrail(trailRequest, userResponse.getId()));
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(new MessageResponse("Exception: " + e));
+        }
+
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<Trail> getTrail(@PathVariable("id") Long idTrail) {
-        Trail trail = trailService.getTrail(idTrail);
-        return ResponseEntity.ok(trail);
+    public ResponseEntity<?> getTrail(@PathVariable("id") Long idTrail) {
+        try {
+            return ResponseEntity.ok(trailService.getTrail(idTrail));
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(new MessageResponse("Exception: " + e));
+        }
     }
 
     @PutMapping("{id}/edit")
-    public ResponseEntity<Trail> editTrail(
-            @RequestBody Trail trail,
-            @PathVariable("id") Long idTrail
-    ) {
-        return ResponseEntity.ok(trailService.editTrail(trail, idTrail));
+    public ResponseEntity<?> editTrail(@RequestBody TrailRequest trailRequest, @PathVariable("id") Long idTrail) {
+        try {
+            return ResponseEntity.ok(trailService.editTrail(trailRequest, idTrail));
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(new MessageResponse("Exception: " + e));
+        }
+
     }
 
     @PutMapping("{id}/update_date")
-    public ResponseEntity<Trail> updateDateTrail(
-            @PathVariable("id") Long idTrail
-    ) {
-        return ResponseEntity.ok(trailService.updateDateTrail(idTrail));
+    public ResponseEntity<?> updateDateTrail(@PathVariable("id") Long idTrail) {
+        try {
+            return ResponseEntity.ok(trailService.updateDateTrail(idTrail));
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(new MessageResponse("Exception: " + e));
+        }
     }
 
     @DeleteMapping("{id}/delete")
-    public void deleteTrail(@PathVariable("id") Long idTrail) {
-        trailService.deleteTrail(idTrail);
+    public ResponseEntity<?> deleteTrail(@PathVariable("id") Long idTrail) {
+        try {
+            trailService.deleteTrail(idTrail);
+            return ResponseEntity.ok().body("deleted");
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(new MessageResponse("Exception: " + e));
+        }
     }
 }

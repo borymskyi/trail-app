@@ -1,6 +1,6 @@
 package com.borymskyi.trail.service.impl;
 
-import com.borymskyi.trail.domain.Profile;
+import com.borymskyi.trail.domain.Users;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * Spring Security wrapper for class {@link Profile}.
+ * Spring Security wrapper for class {@link Users}.
  *
  * @author Dmitrii Borymskyi
  * @version 1.0
@@ -33,13 +33,13 @@ public class UserDetailImpl implements UserDetails {
         this.authorities = authorities;
     }
 
-    public static UserDetailImpl build(Profile profile) {
+    public static UserDetailImpl build(Users profile) {
         List<GrantedAuthority> authorities = profile.getRoles().stream()
                 .map(role -> new SimpleGrantedAuthority(role.getName()))
                 .collect(Collectors.toList());
 
         return new UserDetailImpl(
-                profile.getId(),
+                profile.getId_u(),
                 profile.getUsername(),
                 profile.getPassword(),
                 authorities

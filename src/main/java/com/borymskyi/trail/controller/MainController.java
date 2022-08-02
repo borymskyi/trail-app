@@ -4,13 +4,11 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import com.borymskyi.trail.config.jwt.AuthenticationManagerFilter;
 import com.borymskyi.trail.config.jwt.JwtAuthTokenFilter;
 import com.borymskyi.trail.config.jwt.JwtUtils;
-import com.borymskyi.trail.domain.Profile;
 import com.borymskyi.trail.pojo.*;
-import com.borymskyi.trail.service.ProfileService;
+import com.borymskyi.trail.service.UserService;
 import com.borymskyi.trail.service.impl.UserDetailImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -21,7 +19,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.URI;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
@@ -38,13 +35,13 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 @RequestMapping("api/v1")
 public class MainController {
 
-    private ProfileService profileService;
+    private UserService profileService;
     private AuthenticationManagerFilter authenticationManagerFilter;
     private JwtAuthTokenFilter jwtAuthTokenFilter;
     private JwtUtils jwtUtils;
 
     @Autowired
-    public MainController(ProfileService profileService, AuthenticationManagerFilter authenticationManagerFilter, JwtAuthTokenFilter jwtAuthTokenFilter, JwtUtils jwtUtils) {
+    public MainController(UserService profileService, AuthenticationManagerFilter authenticationManagerFilter, JwtAuthTokenFilter jwtAuthTokenFilter, JwtUtils jwtUtils) {
         this.profileService = profileService;
         this.authenticationManagerFilter = authenticationManagerFilter;
         this.jwtAuthTokenFilter = jwtAuthTokenFilter;
@@ -53,9 +50,9 @@ public class MainController {
 
     @PostMapping("/sign-up")
     public ResponseEntity<?> registration(@RequestBody SignupRequest signupRequest) {
-        profileService.createProfile(signupRequest);
+        profileService.createUser(signupRequest);
         UserResponse userResponse = UserResponse.buildUserResponse(
-                profileService.getProfileByUsername(signupRequest.getUsername())
+                profileService.getUserByUsername(signupRequest.getUsername())
         );
         URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/sign-up").toUriString());
 

@@ -20,10 +20,12 @@ import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Trail {
+public class Trails {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long id_t;
+
     private String title;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd, h:mm a")
@@ -32,5 +34,5 @@ public class Trail {
     @ManyToOne
     @JoinColumn(name = "profile")
     @JsonIgnore
-    private Profile profile;
+    private Users profile;
 }

@@ -1,13 +1,13 @@
 package com.borymskyi.trail.repository;
 
-import com.borymskyi.trail.domain.Trail;
+import com.borymskyi.trail.domain.Trails;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
- * Repository interface for {@link Trail} class.
+ * Repository interface for {@link Trails} class.
  *
  * @author Dmitrii Borymskyi
  * @version 1.0
  */
-public interface TrailRepository extends JpaRepository<Trail, Long> {
+public interface TrailRepository extends JpaRepository<Trails, Long> {
 }

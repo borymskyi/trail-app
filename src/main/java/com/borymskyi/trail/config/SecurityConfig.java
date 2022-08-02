@@ -3,7 +3,6 @@ package com.borymskyi.trail.config;
 import com.borymskyi.trail.config.jwt.JwtAuthTokenFilter;
 import com.borymskyi.trail.config.jwt.JwtUserDetailsService;
 import com.borymskyi.trail.config.jwt.JwtUtils;
-import com.borymskyi.trail.service.impl.ProfileServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

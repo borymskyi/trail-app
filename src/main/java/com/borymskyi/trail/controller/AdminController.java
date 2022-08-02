@@ -1,8 +1,8 @@
 package com.borymskyi.trail.controller;
 
-import com.borymskyi.trail.domain.Role;
+import com.borymskyi.trail.domain.Roles;
 import com.borymskyi.trail.pojo.RoleToUserForm;
-import com.borymskyi.trail.service.ProfileService;
+import com.borymskyi.trail.service.UserService;
 import com.borymskyi.trail.service.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -25,17 +25,17 @@ import java.net.URI;
 @RequestMapping("api/v1/admin")
 public class AdminController {
 
-    private final ProfileService profileService;
+    private final UserService profileService;
     private final RoleService roleService;
 
     @Autowired
-    public AdminController(ProfileService profileService, RoleService roleService) {
+    public AdminController(UserService profileService, RoleService roleService) {
         this.profileService = profileService;
         this.roleService = roleService;
     }
 
     @PostMapping("/role/new")
-    public ResponseEntity<Role> createrole(@RequestBody Role role) {
+    public ResponseEntity<Roles> createrole(@RequestBody Roles role) {
         URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/role/save").toUriString());
 
         return ResponseEntity.created(uri).body(roleService.saveRole(role));
@@ -43,7 +43,7 @@ public class AdminController {
 
     @PostMapping("/role/addtouser")
     public ResponseEntity<?> addRoleToUser(@RequestBody RoleToUserForm form) {
-        profileService.addRoleToProfile(form.getUsername(), form.getRoleName());
+        profileService.addRoleToUser(form.getUsername(), form.getRoleName());
 
         return ResponseEntity.ok().build();
     }

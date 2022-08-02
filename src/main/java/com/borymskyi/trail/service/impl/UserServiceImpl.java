@@ -1,17 +1,15 @@
 package com.borymskyi.trail.service.impl;
 
-import com.borymskyi.trail.domain.Profile;
-import com.borymskyi.trail.domain.Role;
+import com.borymskyi.trail.domain.Users;
+import com.borymskyi.trail.domain.Roles;
 import com.borymskyi.trail.exception.NotFoundException;
-import com.borymskyi.trail.exception.ProfileAlreadyExists;
+import com.borymskyi.trail.exception.UserAlreadyExists;
 import com.borymskyi.trail.pojo.SignupRequest;
-import com.borymskyi.trail.repository.ProfileRepository;
+import com.borymskyi.trail.repository.UserRepository;
 import com.borymskyi.trail.repository.RoleRepository;
-import com.borymskyi.trail.service.ProfileService;
+import com.borymskyi.trail.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -21,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Implementations of {@link ProfileService} interface.
+ * Implementations of {@link UserService} interface.
  *
  * @author Dmitrii Borymskyi
  * @version 1.0
@@ -30,15 +28,15 @@ import java.util.List;
 @Service
 @Transactional
 @Slf4j
-public class ProfileServiceImpl implements ProfileService {
+public class UserServiceImpl implements UserService {
 
-    private ProfileRepository profileRepository;
+    private UserRepository profileRepository;
     private RoleRepository roleRepository;
     private PasswordEncoder passwordEncoder;
 
     @Autowired
-    public ProfileServiceImpl(ProfileRepository profileRepository, RoleRepository roleRepository,
-                              PasswordEncoder passwordEncoder) {
+    public UserServiceImpl(UserRepository profileRepository, RoleRepository roleRepository,
+                           PasswordEncoder passwordEncoder) {
         this.profileRepository = profileRepository;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
@@ -46,7 +44,7 @@ public class ProfileServiceImpl implements ProfileService {
 
     @Override
     public UserDetailImpl getUserDetail(String username) {
-        Profile profile = profileRepository.findByUsername(username);
+        Users profile = profileRepository.findByUsername(username);
 
         if (profile == null) {
             log.error("User not found in the database");
@@ -59,14 +57,14 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
-    public Profile getProfile(Long profileId) {
-        return profileRepository.findById(profileId).orElseThrow(NotFoundException::new);
+    public Users getUser(Long userId) {
+        return profileRepository.findById(userId).orElseThrow(NotFoundException::new);
     }
 
     @Override
-    public Profile getProfileByUsername(String username) {
+    public Users getUserByUsername(String username) {
         try {
-            Profile profile = profileRepository.findByUsername(username);
+            Users profile = profileRepository.findByUsername(username);
             log.info("User found in the database with username: {}", profile.getUsername());
             return profile;
         } catch (Exception e) {
@@ -76,40 +74,39 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
-    public void createProfile(SignupRequest signupRequest) {
+    public void createUser(SignupRequest signupRequest) {
         if (profileRepository.findByUsername(signupRequest.getUsername()) != null) {
-            throw new ProfileAlreadyExists();
+            throw new UserAlreadyExists();
         }
 
-        Profile profile = new Profile(null, signupRequest.getName(), signupRequest.getUsername(),
-                signupRequest.getPassword(), null, null
-        );
-        profile.setPassword(passwordEncoder.encode(profile.getPassword()));
-        profile.getRoles().add(roleRepository.findByName("ROLE_USER"));
+        Users user = new Users(null, signupRequest.getUsername(), signupRequest.getPassword(), null,
+                new ArrayList<>());
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.getRoles().add(roleRepository.findByName("ROLE_USER"));
 
-        Profile newProfile = profileRepository.save(profile);
+        Users newProfile = profileRepository.save(user);
         log.info("Created a new profile with username: {}", newProfile.getUsername());
     }
 
     @Override
-    public void deleteProfile(Long profileId) {
-        if (profileRepository.findById(profileId).isPresent()) {
-            profileRepository.deleteById(profileId);
+    public void deleteUser(Long userId) {
+        if (profileRepository.findById(userId).isPresent()) {
+            profileRepository.deleteById(userId);
         } else {
             throw new NotFoundException();
         }
     }
 
     @Override
-    public List<Profile> getAllUsers() {
+    public List<Users> getAllUsers() {
         log.info("Fetching all users");
         return profileRepository.findAll();
     }
 
     @Override
-    public void addRoleToProfile(String username, String rolename) {
-        Profile profile = profileRepository.findByUsername(username);
-        Role role = roleRepository.findByName(rolename);
+    public void addRoleToUser(String username, String rolename) {
+        Users profile = profileRepository.findByUsername(username);
+        Roles role = roleRepository.findByName(rolename);
         profile.getRoles().add(role);
 
         log.info("Add role {} to profile {}", rolename, username);

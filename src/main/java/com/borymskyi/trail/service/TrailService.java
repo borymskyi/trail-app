@@ -1,9 +1,10 @@
 package com.borymskyi.trail.service;
 
-import com.borymskyi.trail.domain.Trail;
+import com.borymskyi.trail.domain.Trails;
+import com.borymskyi.trail.pojo.TrailRequest;
 
 /**
- * Service interface for {@link Trail} class.
+ * Service interface for {@link Trails} class.
  *
  * @author Dmitrii Borymskyi
  * @version 1.0
@@ -11,13 +12,13 @@ import com.borymskyi.trail.domain.Trail;
 
 public interface TrailService {
 
-    Trail getTrail(Long idTrail);
+    Trails getTrail(Long idTrail);
 
-    Trail createTrail(Trail trail, Long profileId);
+    Trails createTrail(TrailRequest trailRequest, Long userId);
 
-    Trail editTrail(Trail trail, Long idTrail);
+    Trails editTrail(TrailRequest trailRequest, Long idTrail);
 
-    Trail updateDateTrail(Long idTrail);
+    Trails updateDateTrail(Long idTrail);
 
     void deleteTrail(Long idTrail);
 }

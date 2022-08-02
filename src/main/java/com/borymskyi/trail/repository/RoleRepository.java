@@ -1,17 +1,15 @@
 package com.borymskyi.trail.repository;
 
-import com.borymskyi.trail.domain.Profile;
-import com.borymskyi.trail.domain.Role;
+import com.borymskyi.trail.domain.Roles;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
- * Repository interface for {@link Role} class.
+ * Repository interface for {@link Roles} class.
  *
  * @author Dmitrii Borymskyi
  * @version 1.0
  */
-public interface RoleRepository extends JpaRepository<Role, Long> {
+public interface RoleRepository extends JpaRepository<Roles, Long> {
 
-    Role findByName(String name);
-
+    Roles findByName(String name);
 }
