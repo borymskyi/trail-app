@@ -39,7 +39,7 @@ public class UserDetailImpl implements UserDetails {
                 .collect(Collectors.toList());
 
         return new UserDetailImpl(
-                profile.getId_u(),
+                profile.getUserId(),
                 profile.getUsername(),
                 profile.getPassword(),
                 authorities

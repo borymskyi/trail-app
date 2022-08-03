@@ -74,6 +74,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public boolean checkUserByUsername(String username) {
+        if (profileRepository.findByUsername(username) == null) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    @Override
     public void createUser(SignupRequest signupRequest) {
         if (profileRepository.findByUsername(signupRequest.getUsername()) != null) {
             throw new UserAlreadyExists();
@@ -83,6 +92,21 @@ public class UserServiceImpl implements UserService {
                 new ArrayList<>());
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.getRoles().add(roleRepository.findByName("ROLE_USER"));
+
+        Users newProfile = profileRepository.save(user);
+        log.info("Created a new profile with username: {}", newProfile.getUsername());
+    }
+
+    @Override
+    public void createAdmin(SignupRequest signupRequest) {
+        if (profileRepository.findByUsername(signupRequest.getUsername()) != null) {
+            throw new UserAlreadyExists();
+        }
+
+        Users user = new Users(null, signupRequest.getUsername(), signupRequest.getPassword(), null,
+                new ArrayList<>());
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.getRoles().add(roleRepository.findByName("ROLE_ADMIN"));
 
         Users newProfile = profileRepository.save(user);
         log.info("Created a new profile with username: {}", newProfile.getUsername());

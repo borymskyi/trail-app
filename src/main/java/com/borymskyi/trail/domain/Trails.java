@@ -24,7 +24,7 @@ public class Trails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id_t;
+    private Long trailId;
 
     private String title;
 
@@ -32,7 +32,7 @@ public class Trails {
     private LocalDateTime update_time;
 
     @ManyToOne
-    @JoinColumn(name = "profile")
+    @JoinColumn(name = "users")
     @JsonIgnore
-    private Users profile;
+    private Users user;
 }

@@ -23,12 +23,15 @@ public class Users {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id_u;
+    private Long userId;
 
+    @Column(unique = true, nullable = false)
     private String username;
+
+    @Column(nullable = false)
     private String password;
 
-    @OneToMany(mappedBy = "profile", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
     private List<Trails> trails;
 
     @ManyToMany(fetch = FetchType.EAGER)
@@ -36,8 +39,8 @@ public class Users {
             joinColumns = @JoinColumn(name = "user_id",
                     nullable = false, updatable = false),
             inverseJoinColumns = @JoinColumn(name = "role_id",
-                    referencedColumnName = "id_r",
-                    foreignKey = @ForeignKey(name = "FK_ROLES_ID", foreignKeyDefinition = "FOREIGN KEY (ROLE_ID) REFERENCES ROLES ON DELETE CASCADE"),
+                    referencedColumnName = "roleId",
+                    foreignKey = @ForeignKey(name = "FK_ROLES_ID", foreignKeyDefinition = "FOREIGN KEY (ROLE_ID) REFERENCES ROLES ON DELETE CASCADE ON UPDATE CASCADE"),
                     nullable = false,
                     updatable = false)
     )

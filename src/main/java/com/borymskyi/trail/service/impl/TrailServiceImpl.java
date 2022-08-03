@@ -45,7 +45,7 @@ public class TrailServiceImpl implements TrailService {
         if (trailRequest.getTitle() != null && !trailRequest.getTitle().equals("")) {
             if (userRepository.findById(userId).isPresent()) {
                 Trails trail = new Trails(null, trailRequest.getTitle(), null, null);
-                trail.setProfile(userRepository.findById(userId).get());
+                trail.setUser(userRepository.findById(userId).get());
                 trail.setUpdate_time(LocalDateTime.now());
                 return trailRepository.save(trail);
             } else {

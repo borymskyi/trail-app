@@ -29,7 +29,7 @@ public class UserResponse {
 
     public static UserResponse buildUserResponse(Users profile) {
         return new UserResponse(
-                profile.getId_u(),
+                profile.getUserId(),
                 profile.getUsername(),
                 profile.getTrails(),
                 profile.getRoles()

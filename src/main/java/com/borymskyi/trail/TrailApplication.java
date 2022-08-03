@@ -1,7 +1,9 @@
 package com.borymskyi.trail;
 
 import com.borymskyi.trail.domain.Roles;
+import com.borymskyi.trail.pojo.SignupRequest;
 import com.borymskyi.trail.service.RoleService;
+import com.borymskyi.trail.service.UserService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -31,4 +33,14 @@ public class TrailApplication {
 		};
 	}
 
+	@Bean
+	CommandLineRunner runSecond(UserService userService) {
+		return args -> {
+			if (userService.checkUserByUsername("admin")) {
+				userService.createAdmin(new SignupRequest("admin", "qwerty123"));
+			} else {
+				System.out.println("admin exists");
+			}
+		};
+	}
 }

@@ -44,7 +44,7 @@ public class RoleServiceImpl implements RoleService {
 
     public void deleteRoleByName(String name) {
         try {
-            roleRepository.deleteById(roleRepository.findByName(name).getId_r());
+            roleRepository.deleteById(roleRepository.findByName(name).getRoleId());
         } catch (Exception e) {
             log.error("Role with name: " + name + "not found");
             throw new NotFoundException();

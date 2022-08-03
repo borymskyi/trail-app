@@ -23,9 +23,13 @@ public interface UserService {
 
     Users getUserByUsername(String username);
 
+    boolean checkUserByUsername(String username);
+
     void createUser(SignupRequest signupRequest);
 
     void deleteUser(Long userId);
 
     UserDetailImpl getUserDetail(String username);
+
+    void createAdmin(SignupRequest signupRequest);
 }
