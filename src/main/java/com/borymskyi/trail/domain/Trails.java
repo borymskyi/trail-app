@@ -23,7 +23,7 @@ import java.time.LocalDateTime;
 public class Trails {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long trailId;
 
     private String title;

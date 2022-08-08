@@ -35,9 +35,12 @@ public class Users {
     private List<Trails> trails;
 
     @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "User_Roles",
+    @JoinTable(name = "Users_Roles",
             joinColumns = @JoinColumn(name = "user_id",
-                    nullable = false, updatable = false),
+                    referencedColumnName = "userId",
+                    foreignKey = @ForeignKey(name = "FK_USERS_ID", foreignKeyDefinition = "FOREIGN KEY (USER_ID) REFERENCES USERS ON DELETE CASCADE ON UPDATE CASCADE"),
+                    nullable = false,
+                    updatable = false),
             inverseJoinColumns = @JoinColumn(name = "role_id",
                     referencedColumnName = "roleId",
                     foreignKey = @ForeignKey(name = "FK_ROLES_ID", foreignKeyDefinition = "FOREIGN KEY (ROLE_ID) REFERENCES ROLES ON DELETE CASCADE ON UPDATE CASCADE"),

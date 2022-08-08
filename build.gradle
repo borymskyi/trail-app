@@ -1,5 +1,5 @@
 plugins {
-	id 'org.springframework.boot' version '2.7.1'
+	id 'org.springframework.boot' version '2.7.2'
 	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
 	id 'java'
 }
@@ -14,20 +14,20 @@ repositories {
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-freemarker:2.7.2'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa:2.6.6'
-	implementation 'org.postgresql:postgresql:42.3.6'
+//	DataBase support
+	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa'
+	implementation group: 'org.postgresql', name: 'postgresql'
+	implementation group: 'org.flywaydb', name: 'flyway-core'
+
+//	Security
+	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-security'
+	implementation group: 'com.auth0', name: 'java-jwt', version: '3.19.2'
 
 	compileOnly 'org.projectlombok:lombok:1.18.24'
 	annotationProcessor 'org.projectlombok:lombok:1.18.24'
-
-	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf:2.7.0'
-
-	implementation 'org.springframework.boot:spring-boot-starter-security:2.7.1'
-
-	implementation 'com.auth0:java-jwt:3.19.2'
 }
 
 tasks.named('test') {
