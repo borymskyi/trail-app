@@ -1,5 +1,5 @@
 # REST API for a habit building application.
->This application will help you introduce new healthy habits into your life. You create a "Trail" and every time you complete a task, update the date.
+>This application will help you introduce new healthy habits into your life. <b>Create a "trail" and every time you complete a task - update the date</b>.
 A habit is like a trail, without using it, it overgrows.
 
 In this project I realize full mechanism of user login and registration. Also Implement Role Based Action Control.
