@@ -164,3 +164,63 @@ Bearer {jwt}
     "update_time": "2022-08-09, 10:16 AM"
 }
 ```
+
+
+### PUT localhost:9966/api/v1/trail/7/update_date
+
+Request to Secure API for USER_ROLE, ADMIN_ROLE.<br>
+Update the date of your {id} habit.
+
+##### Example Input: 
+```Bearer {jwt}```
+
+##### Example Response:
+```
+{
+    "trailId": 7,
+    "title": "45 min fullbody",
+    "update_time": "2022-08-09, 1:04 PM"
+}
+```
+
+
+### DELETE localhost:9966/api/v1/trail/7/delete
+
+Request to Secure API for USER_ROLE, ADMIN_ROLE.<br>
+Delete your {id} habit.
+
+##### Example Input: 
+```Bearer {jwt}```
+
+##### Example Response:
+```{deleted}```
+
+
+### PUT localhost:9966/api/v1/admin/role/addtouser
+
+Request to Secure API for ADMIN_ROLE.<br>
+Add a role to a user.
+
+##### Example Input: 
+```
+Bearer {jwt}
+{
+    "username": "test",
+    "roleName": "ROLE_ADMIN"
+}
+```
+
+
+### PUT localhost:9966/api/v1/admin/role/removetouser
+
+Request to Secure API for ADMIN_ROLE.<br>
+Rmove a role to a user.
+
+##### Example Input: 
+```
+Bearer {jwt}
+{
+    "username": "test",
+    "roleName": "ROLE_ADMIN"
+}
+```
