@@ -1,15 +1,13 @@
 package com.borymskyi.trail;
 
-import com.borymskyi.trail.domain.Roles;
+import com.borymskyi.trail.pojo.RolePojo;
 import com.borymskyi.trail.pojo.SignupRequest;
 import com.borymskyi.trail.service.RoleService;
 import com.borymskyi.trail.service.UserService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.flyway.FlywayMigrationStrategy;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication
 public class TrailApplication {
@@ -22,13 +20,13 @@ public class TrailApplication {
 	CommandLineRunner run(RoleService roleService) {
 		return args -> {
 			if (roleService.getRoleByName("ROLE_USER") == null) {
-				roleService.saveRole(new Roles(null, "ROLE_USER"));
+				roleService.saveRole(new RolePojo("ROLE_USER"));
 			} else {
 				System.out.println("ROLE_USER exist");
 			}
 
 			if (roleService.getRoleByName("ROLE_ADMIN") == null) {
-				roleService.saveRole(new Roles(null, "ROLE_ADMIN"));
+				roleService.saveRole(new RolePojo("ROLE_USER"));
 			} else {
 				System.out.println("ROLE_ADMIN exist");
 			}

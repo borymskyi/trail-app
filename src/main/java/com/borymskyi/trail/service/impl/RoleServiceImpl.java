@@ -2,6 +2,7 @@ package com.borymskyi.trail.service.impl;
 
 import com.borymskyi.trail.domain.Roles;
 import com.borymskyi.trail.exception.NotFoundException;
+import com.borymskyi.trail.pojo.RolePojo;
 import com.borymskyi.trail.repository.RoleRepository;
 import com.borymskyi.trail.service.RoleService;
 import lombok.extern.slf4j.Slf4j;
@@ -28,8 +29,17 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public Roles saveRole(Roles role) {
-        return roleRepository.save(role);
+    public Roles saveRole(RolePojo roleRequest) {
+        if (!roleRequest.getName().equals("") && roleRequest.getName() != null) {
+            Roles role = new Roles();
+            role.setName(roleRequest.getName());
+            log.info("Role with name=" + role.getName() + " is created.");
+            return roleRepository.save(role);
+        } else {
+            log.error("Bad request. RoleName=" + roleRequest.getName());
+            throw new RuntimeException("Bad request");
+        }
+
     }
 
     @Override
@@ -38,15 +48,6 @@ public class RoleServiceImpl implements RoleService {
             return roleRepository.findByName(name);
         } catch (Exception e) {
             log.error("Role with name:" + name + " not found");
-            throw new NotFoundException();
-        }
-    }
-
-    public void deleteRoleByName(String name) {
-        try {
-            roleRepository.deleteById(roleRepository.findByName(name).getRoleId());
-        } catch (Exception e) {
-            log.error("Role with name: " + name + "not found");
             throw new NotFoundException();
         }
     }

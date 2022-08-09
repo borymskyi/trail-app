@@ -4,7 +4,7 @@ import com.borymskyi.trail.config.jwt.JwtUtils;
 import com.borymskyi.trail.domain.Trails;
 import com.borymskyi.trail.pojo.MessageResponse;
 import com.borymskyi.trail.pojo.TrailRequest;
-import com.borymskyi.trail.pojo.UserResponse;
+import com.borymskyi.trail.pojo.UserPojo;
 import com.borymskyi.trail.service.UserService;
 import com.borymskyi.trail.service.TrailService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,12 +39,7 @@ public class TrailController {
     @PostMapping
     public ResponseEntity<?> createTrail(@RequestBody TrailRequest trailRequest, HttpServletRequest request) {
         try {
-            UserResponse userResponse = UserResponse.buildUserResponse(
-                    profileService.getUserByUsername(
-                            jwtUtils.getUsernameByJwt(request.getHeader(HttpHeaders.AUTHORIZATION))
-                    )
-            );
-
+            UserPojo userResponse = getIncomingUserFromHeader(request);
             return ResponseEntity.ok(trailService.createTrail(trailRequest, userResponse.getId()));
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(new MessageResponse("Exception: " + e));
@@ -53,40 +48,52 @@ public class TrailController {
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<?> getTrail(@PathVariable("id") Long idTrail) {
+    public ResponseEntity<?> getTrail(@PathVariable("id") Long idTrail, HttpServletRequest request) {
         try {
-            return ResponseEntity.ok(trailService.getTrail(idTrail));
+            UserPojo userResponse = getIncomingUserFromHeader(request);
+            return ResponseEntity.ok(trailService.getTrail(idTrail, userResponse));
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(new MessageResponse("Exception: " + e));
         }
     }
 
     @PutMapping("{id}/edit")
-    public ResponseEntity<?> editTrail(@RequestBody TrailRequest trailRequest, @PathVariable("id") Long idTrail) {
+    public ResponseEntity<?> editTrail(@RequestBody TrailRequest trailRequest,
+                                       @PathVariable("id") Long idTrail, HttpServletRequest request) {
         try {
-            return ResponseEntity.ok(trailService.editTrail(trailRequest, idTrail));
+            UserPojo userResponse = getIncomingUserFromHeader(request);
+            return ResponseEntity.ok(trailService.editTrail(trailRequest, idTrail, userResponse));
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(new MessageResponse("Exception: " + e));
         }
-
     }
 
     @PutMapping("{id}/update_date")
-    public ResponseEntity<?> updateDateTrail(@PathVariable("id") Long idTrail) {
+    public ResponseEntity<?> updateDateTrail(@PathVariable("id") Long idTrail, HttpServletRequest request) {
         try {
-            return ResponseEntity.ok(trailService.updateDateTrail(idTrail));
+            UserPojo userResponse = getIncomingUserFromHeader(request);
+            return ResponseEntity.ok(trailService.updateDateTrail(idTrail, userResponse));
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(new MessageResponse("Exception: " + e));
         }
     }
 
     @DeleteMapping("{id}/delete")
-    public ResponseEntity<?> deleteTrail(@PathVariable("id") Long idTrail) {
+    public ResponseEntity<?> deleteTrail(@PathVariable("id") Long idTrail, HttpServletRequest request) {
         try {
-            trailService.deleteTrail(idTrail);
+            UserPojo userResponse = getIncomingUserFromHeader(request);
+            trailService.deleteTrail(idTrail, userResponse);
             return ResponseEntity.ok().body("deleted");
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(new MessageResponse("Exception: " + e));
         }
+    }
+
+    public UserPojo getIncomingUserFromHeader(HttpServletRequest request) {
+        return UserPojo.buildUserResponse(
+                profileService.getUserByUsername(
+                        jwtUtils.getUsernameByJwt(request.getHeader(HttpHeaders.AUTHORIZATION))
+                )
+        );
     }
 }

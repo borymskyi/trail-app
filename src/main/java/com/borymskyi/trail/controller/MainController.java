@@ -51,7 +51,7 @@ public class MainController {
     @PostMapping("/sign-up")
     public ResponseEntity<?> registration(@RequestBody SignupRequest signupRequest) {
         profileService.createUser(signupRequest);
-        UserResponse userResponse = UserResponse.buildUserResponse(
+        UserPojo userResponse = UserPojo.buildUserResponse(
                 profileService.getUserByUsername(signupRequest.getUsername())
         );
         URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/sign-up").toUriString());

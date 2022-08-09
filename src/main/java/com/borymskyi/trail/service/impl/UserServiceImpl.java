@@ -30,41 +30,45 @@ import java.util.List;
 @Slf4j
 public class UserServiceImpl implements UserService {
 
-    private UserRepository profileRepository;
+    private UserRepository usersRepository;
     private RoleRepository roleRepository;
     private PasswordEncoder passwordEncoder;
 
     @Autowired
     public UserServiceImpl(UserRepository profileRepository, RoleRepository roleRepository,
                            PasswordEncoder passwordEncoder) {
-        this.profileRepository = profileRepository;
+        this.usersRepository = profileRepository;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
     @Override
-    public UserDetailImpl getUserDetail(String username) {
-        Users profile = profileRepository.findByUsername(username);
-
-        if (profile == null) {
-            log.error("User not found in the database");
-            throw new UsernameNotFoundException("User not found in the database");
+    public boolean checkUserByUsername(String username) {
+        if (usersRepository.findByUsername(username) == null) {
+            return true;
         } else {
-            log.info("User found in the database with username: {}", profile.getUsername());
+            return false;
         }
-
-        return UserDetailImpl.build(profile);
     }
 
     @Override
-    public Users getUser(Long userId) {
-        return profileRepository.findById(userId).orElseThrow(NotFoundException::new);
+    public UserDetailImpl getUserDetail(String username) {
+        Users user = usersRepository.findByUsername(username);
+
+        if (user == null) {
+            log.error("User not found in the database");
+            throw new UsernameNotFoundException("User not found in the database");
+        } else {
+            log.info("User found in the database with username: {}", user.getUsername());
+        }
+
+        return UserDetailImpl.build(user);
     }
 
     @Override
     public Users getUserByUsername(String username) {
         try {
-            Users profile = profileRepository.findByUsername(username);
+            Users profile = usersRepository.findByUsername(username);
             log.info("User found in the database with username: {}", profile.getUsername());
             return profile;
         } catch (Exception e) {
@@ -74,17 +78,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean checkUserByUsername(String username) {
-        if (profileRepository.findByUsername(username) == null) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    @Override
     public void createUser(SignupRequest signupRequest) {
-        if (profileRepository.findByUsername(signupRequest.getUsername()) != null) {
+        if (usersRepository.findByUsername(signupRequest.getUsername()) != null) {
             throw new UserAlreadyExists();
         }
 
@@ -93,13 +88,13 @@ public class UserServiceImpl implements UserService {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.getRoles().add(roleRepository.findByName("ROLE_USER"));
 
-        Users newProfile = profileRepository.save(user);
+        Users newProfile = usersRepository.save(user);
         log.info("Created a new profile with username: {}", newProfile.getUsername());
     }
 
     @Override
     public void createAdmin(SignupRequest signupRequest) {
-        if (profileRepository.findByUsername(signupRequest.getUsername()) != null) {
+        if (usersRepository.findByUsername(signupRequest.getUsername()) != null) {
             throw new UserAlreadyExists();
         }
 
@@ -108,32 +103,41 @@ public class UserServiceImpl implements UserService {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.getRoles().add(roleRepository.findByName("ROLE_ADMIN"));
 
-        Users newProfile = profileRepository.save(user);
+        Users newProfile = usersRepository.save(user);
         log.info("Created a new profile with username: {}", newProfile.getUsername());
     }
 
     @Override
-    public void deleteUser(Long userId) {
-        if (profileRepository.findById(userId).isPresent()) {
-            profileRepository.deleteById(userId);
+    public void addRoleToUser(String username, String roleName) {
+        Users user = usersRepository.findByUsername(username);
+        Roles role = roleRepository.findByName(roleName);
+        if (user != null && role != null) {
+            user.getRoles().add(role);
+            log.info("Role=" + role.getName() + " add to User=" + user.getUsername());
+            usersRepository.save(user);
         } else {
+            log.error("Bad request. Username=" + username +
+                    " RoleName=" + roleName);
             throw new NotFoundException();
         }
     }
 
     @Override
-    public List<Users> getAllUsers() {
-        log.info("Fetching all users");
-        return profileRepository.findAll();
-    }
-
-    @Override
-    public void addRoleToUser(String username, String rolename) {
-        Users profile = profileRepository.findByUsername(username);
-        Roles role = roleRepository.findByName(rolename);
-        profile.getRoles().add(role);
-
-        log.info("Add role {} to profile {}", rolename, username);
-        profileRepository.save(profile);
+    public void removeRoleToUser(String username, String roleName) {
+        Users user = usersRepository.findByUsername(username);
+        Roles role = roleRepository.findByName(roleName);
+        if (user != null && role != null) {
+            for (int i = 0; i < user.getRoles().size(); i++) {
+                if (user.getRoles().get(i).getName().equals(roleName)) {
+                    user.getRoles().remove(i);
+                }
+            }
+            log.info("Role=" + role.getName() + " remove to User=" + user.getUsername());
+            usersRepository.save(user);
+        } else {
+            log.error("Bad request. Username=" + username +
+                    " RoleName=" + roleName);
+            throw new NotFoundException();
+        }
     }
 }

@@ -2,7 +2,7 @@ package com.borymskyi.trail.controller;
 
 import com.borymskyi.trail.config.jwt.JwtUtils;
 import com.borymskyi.trail.domain.Users;
-import com.borymskyi.trail.pojo.UserResponse;
+import com.borymskyi.trail.pojo.UserPojo;
 import com.borymskyi.trail.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -34,7 +34,7 @@ public class UserController {
 
     @GetMapping
     public ResponseEntity<?> getProfile(HttpServletRequest request) {
-        UserResponse userResponse = UserResponse.buildUserResponse(
+        UserPojo userResponse = UserPojo.buildUserResponse(
                 profileService.getUserByUsername(
                         jwtUtils.getUsernameByJwt(request.getHeader(AUTHORIZATION))
                 )

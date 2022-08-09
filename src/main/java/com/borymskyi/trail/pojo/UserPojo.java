@@ -13,22 +13,22 @@ import java.util.List;
  * @version 1.0
  */
 
-public class UserResponse {
+public class UserPojo {
 
     private Long id;
     private String username;
     private List<Trails> trails;
     private List<Roles> roles;
 
-    public UserResponse(Long id, String username, List<Trails> trails, List<Roles> roles) {
+    public UserPojo(Long id, String username, List<Trails> trails, List<Roles> roles) {
         this.id = id;
         this.username = username;
         this.trails = trails;
         this.roles = roles;
     }
 
-    public static UserResponse buildUserResponse(Users profile) {
-        return new UserResponse(
+    public static UserPojo buildUserResponse(Users profile) {
+        return new UserPojo(
                 profile.getUserId(),
                 profile.getUsername(),
                 profile.getTrails(),

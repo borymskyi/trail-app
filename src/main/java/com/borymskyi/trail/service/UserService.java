@@ -1,6 +1,7 @@
 package com.borymskyi.trail.service;
 
 import com.borymskyi.trail.domain.Users;
+import com.borymskyi.trail.pojo.RolePojo;
 import com.borymskyi.trail.pojo.SignupRequest;
 import com.borymskyi.trail.service.impl.UserDetailImpl;
 
@@ -15,11 +16,7 @@ import java.util.List;
 
 public interface UserService {
 
-    List<Users> getAllUsers();
-
-    void addRoleToUser(String username, String rolename);
-
-    Users getUser(Long userId);
+    void addRoleToUser(String username, String roleName);
 
     Users getUserByUsername(String username);
 
@@ -27,9 +24,9 @@ public interface UserService {
 
     void createUser(SignupRequest signupRequest);
 
-    void deleteUser(Long userId);
-
     UserDetailImpl getUserDetail(String username);
 
     void createAdmin(SignupRequest signupRequest);
+
+    void removeRoleToUser(String username, String roleName);
 }

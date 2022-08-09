@@ -1,6 +1,7 @@
 package com.borymskyi.trail.service;
 
 import com.borymskyi.trail.domain.Roles;
+import com.borymskyi.trail.pojo.RolePojo;
 
 /**
  * Service interface for {@link Roles} class.
@@ -10,8 +11,7 @@ import com.borymskyi.trail.domain.Roles;
  */
 public interface RoleService {
 
-    Roles saveRole(Roles role);
+    Roles saveRole(RolePojo roleRequest);
 
     Roles getRoleByName(String name);
-
 }

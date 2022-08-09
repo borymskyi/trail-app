@@ -2,6 +2,7 @@ package com.borymskyi.trail.service;
 
 import com.borymskyi.trail.domain.Trails;
 import com.borymskyi.trail.pojo.TrailRequest;
+import com.borymskyi.trail.pojo.UserPojo;
 
 /**
  * Service interface for {@link Trails} class.
@@ -12,13 +13,13 @@ import com.borymskyi.trail.pojo.TrailRequest;
 
 public interface TrailService {
 
-    Trails getTrail(Long idTrail);
+    Trails getTrail(Long idTrail, UserPojo userResponse);
 
     Trails createTrail(TrailRequest trailRequest, Long userId);
 
-    Trails editTrail(TrailRequest trailRequest, Long idTrail);
+    Trails editTrail(TrailRequest trailRequest, Long idTrail, UserPojo userResponse);
 
-    Trails updateDateTrail(Long idTrail);
+    Trails updateDateTrail(Long idTrail, UserPojo userResponse);
 
-    void deleteTrail(Long idTrail);
+    void deleteTrail(Long idTrail, UserPojo userResponse);
 }

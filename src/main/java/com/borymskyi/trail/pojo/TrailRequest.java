@@ -15,4 +15,12 @@ public class TrailRequest {
     public void setTitle(String title) {
         this.title = title;
     }
+
+    public boolean validateTitle(String titleTrail) {
+        if (titleTrail != null && !titleTrail.equals("")) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 }
