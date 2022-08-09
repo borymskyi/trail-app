@@ -1,7 +1,10 @@
 # REST API for a habit building application.
+>This application will help you introduce new healthy habits into your life. You create a "Trail" and every time you complete a task, update the date.
+A habit is like a trail, without using it, it overgrows.
+
 In this project I realize full mechanism of user login and registration. Also Implement Role Based Action Control.
 
-To implement it, I used `Spring Boot`, `Spring Data JPA`, `Flyway` and `Postgres` to store and migration data, `Spring Security` to implement security issues, `JWT` to communicate between server and client. 
+To implement it, I used `Spring Boot`, `Spring Data JPA`, `Flyway` and `Postgres` to store and migration data, `Spring Security` to implement security issues, `JWT` to communicate between server and client.
 
 # Running
 To run the application enter in the command line: `gradlew bootRun`
