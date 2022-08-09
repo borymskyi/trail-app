@@ -25,7 +25,7 @@ Creates new user
 
 ### POST localhost:9966/api/v1/sign-in
 
-Get JWT Token based on user credentials
+Get JWT Token based on user credentials.
 
 ##### Example Input: 
 ```
@@ -39,11 +39,35 @@ Get JWT Token based on user credentials
 ```
 {
     "tokens": {
-        "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0Iiwicm9sZXMiOlsiUk9MRV9VU0VSIl0sImV4cCI6MTY1OTk1ODI1MH0.ELK-UQ_1T9Q7diOwgaLq76gEVM3SALI5wNzAKos0X_A",
-        "refresh_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0IiwiZXhwIjoxNjU5OTYxMjUwfQ.wx3Qz5jzyob9Zj7cwcPvp1gIpFyjDA9aJHQjTvCrTQo"
+        "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0Iiwicm9sZXMiOlsiUk9MRV9VU0VSIl0sImV4cCI6MTY2MDAyOTE3M30.G3mISreP6oQvqSe_RYraxTE7cBiFtSJkQC7oftEy-1k",
+        "refresh_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0IiwiZXhwIjoxNjYwMDMyMTczfQ.D3vQsVBfqvr2EcqfJfMkd9wxEkvPl98B80EVW6KT2tI"
     },
     "type": "Bearer",
-    "id": 5,
+    "id": 6,
+    "username": "test",
+    "roles": [
+        "ROLE_USER"
+    ]
+}
+```
+
+
+### POST localhost:9966/api/v1/token/refresh
+
+Get refresh JWT token.
+
+##### Example Input: 
+```Bearer {jwt}```
+
+##### Example Response: 
+```
+{
+    "tokens": {
+        "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0Iiwicm9sZXMiOlsiUk9MRV9VU0VSIl0sImV4cCI6MTY2MDAyOTIxM30.x7E0cT3Gi7zzBwIduJi3CTxYo9C_vKjW1-kFGufUCHY",
+        "refresh_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0Iiwicm9sZXMiOlsiUk9MRV9VU0VSIl0sImV4cCI6MTY2MDAyOTE3M30.G3mISreP6oQvqSe_RYraxTE7cBiFtSJkQC7oftEy-1k"
+    },
+    "type": "Bearer",
+    "id": 6,
     "username": "test",
     "roles": [
         "ROLE_USER"
@@ -54,7 +78,8 @@ Get JWT Token based on user credentials
 
 ### GET localhost:9966/api/v1/profile
 
-Make Request to Secure API for USER_ROLE.
+Request to Secure API for USER_ROLE, ADMIN_ROLE.<br>
+Get your profile details.
 
 ##### Example Input: 
 ```Bearer {jwt}```
@@ -62,7 +87,7 @@ Make Request to Secure API for USER_ROLE.
 ##### Example Response: 
 ```
 {
-    "id": 5,
+    "id": 6,
     "username": "test",
     "trails": [],
     "roles": [
@@ -71,5 +96,71 @@ Make Request to Secure API for USER_ROLE.
             "name": "ROLE_USER"
         }
     ]
+}
+```
+
+
+### POST localhost:9966/api/v1/trail
+
+Request to Secure API for USER_ROLE, ADMIN_ROLE.<br>
+Create new habit.
+
+##### Example Input: 
+```
+Bearer {jwt}
+
+{
+    "title": "20 minute full body"
+}
+```
+
+##### Example Response: 
+```
+{
+    "trailId": 7,
+    "title": "20 minute full body",
+    "update_time": "2022-08-09, 10:16 AM"
+}
+```
+
+
+### GET localhost:9966/api/v1/trail/7
+
+Request to Secure API for USER_ROLE, ADMIN_ROLE.<br>
+Get detailed info about a {id} habit.
+
+##### Example Input: 
+```Bearer {jwt}```
+
+##### Example Response: 
+```
+{
+    "trailId": 7,
+    "title": "20 minute full body",
+    "update_time": "2022-08-09, 10:16 AM"
+}
+```
+
+
+### PUT localhost:9966/api/v1/trail/7/edit
+
+Request to Secure API for USER_ROLE, ADMIN_ROLE.<br>
+Change the title of your {id} habit
+
+##### Example Input: 
+```
+Bearer {jwt}
+
+{
+    "title": "45 min fullbody"
+}
+```
+
+##### Example Response:
+```
+{
+    "trailId": 7,
+    "title": "45 min fullbody",
+    "update_time": "2022-08-09, 10:16 AM"
 }
 ```
