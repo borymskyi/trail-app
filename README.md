@@ -15,7 +15,7 @@ After project running, schema in the Database created.
 
 ### POST localhost:9966/api/v1/sign-up
 
-Creates new user
+Creates new user. Set the name to `Admin` to get `ROLE_ADMIN` role.
  
 ##### Example Input: 
 ```
