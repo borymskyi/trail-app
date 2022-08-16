@@ -4,7 +4,8 @@ A habit is like a trail, without using it, it overgrows.
 
 In this project I realize full mechanism of user login and registration. Also Implement Role Based Action Control.
 
-To implement it, I used `Spring Boot`, `Spring Data JPA`, `Flyway` and `Postgres` to store and migration data, `Spring Security` to implement security issues, `JWT` to communicate between server and client.
+To implement it, I used `Spring Boot`, `Spring Data JPA`, `Flyway` and `Postgres` to store and migration data, `Spring Security` to implement security issues, `JWT` to communicate between server and client.<br>
+To test the business logic, the `Testcontainers` approach with `JUnit 5` was used. `Docker` creates a separate container with `PostgreSQL` at the start of testing and performs all the necessary unittests there.
 
 # Running
 To run the application enter in the command line: `gradlew bootRun`
