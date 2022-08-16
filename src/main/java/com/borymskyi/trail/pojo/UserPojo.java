@@ -29,7 +29,7 @@ public class UserPojo {
 
     public static UserPojo buildUserResponse(Users profile) {
         return new UserPojo(
-                profile.getUserId(),
+                profile.getUser_id(),
                 profile.getUsername(),
                 profile.getTrails(),
                 profile.getRoles()

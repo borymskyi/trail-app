@@ -1,5 +1,6 @@
 package com.borymskyi.trail.service.impl;
 
+import com.borymskyi.trail.config.jwt.UserDetailImpl;
 import com.borymskyi.trail.domain.Users;
 import com.borymskyi.trail.domain.Roles;
 import com.borymskyi.trail.exception.NotFoundException;
@@ -16,7 +17,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Implementations of {@link UserService} interface.
@@ -78,37 +78,28 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void createUser(SignupRequest signupRequest) {
-        if (usersRepository.findByUsername(signupRequest.getUsername()) != null) {
+    public Users createUser(SignupRequest signupRequest) {
+        if (usersRepository.findByUsername(signupRequest.getUsername()) == null) {
+
+            Users user = new Users(null, signupRequest.getUsername(), signupRequest.getPassword(), null,
+                    new ArrayList<>());
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+            if (!signupRequest.getUsername().equals("Admin")) {
+                user.getRoles().add(roleRepository.findByName("ROLE_USER"));
+                usersRepository.save(user);
+            } else {
+                user.getRoles().add(roleRepository.findByName("ROLE_ADMIN"));
+                usersRepository.save(user);
+            }
+            log.info("Created a new profile with username: {}", user.getUsername());
+            return user;
+        } else {
             throw new UserAlreadyExists();
         }
-
-        Users user = new Users(null, signupRequest.getUsername(), signupRequest.getPassword(), null,
-                new ArrayList<>());
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        user.getRoles().add(roleRepository.findByName("ROLE_USER"));
-
-        Users newProfile = usersRepository.save(user);
-        log.info("Created a new profile with username: {}", newProfile.getUsername());
     }
 
     @Override
-    public void createAdmin(SignupRequest signupRequest) {
-        if (usersRepository.findByUsername(signupRequest.getUsername()) != null) {
-            throw new UserAlreadyExists();
-        }
-
-        Users user = new Users(null, signupRequest.getUsername(), signupRequest.getPassword(), null,
-                new ArrayList<>());
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        user.getRoles().add(roleRepository.findByName("ROLE_ADMIN"));
-
-        Users newProfile = usersRepository.save(user);
-        log.info("Created a new profile with username: {}", newProfile.getUsername());
-    }
-
-    @Override
-    public void addRoleToUser(String username, String roleName) {
+    public Users addRoleToUser(String username, String roleName) {
         Users user = usersRepository.findByUsername(username);
         Roles role = roleRepository.findByName(roleName);
         if (user != null && role != null) {
@@ -120,10 +111,11 @@ public class UserServiceImpl implements UserService {
                     " RoleName=" + roleName);
             throw new NotFoundException();
         }
+        return user;
     }
 
     @Override
-    public void removeRoleToUser(String username, String roleName) {
+    public Users removeRoleToUser(String username, String roleName) {
         Users user = usersRepository.findByUsername(username);
         Roles role = roleRepository.findByName(roleName);
         if (user != null && role != null) {
@@ -139,5 +131,6 @@ public class UserServiceImpl implements UserService {
                     " RoleName=" + roleName);
             throw new NotFoundException();
         }
+        return user;
     }
 }

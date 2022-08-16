@@ -9,6 +9,7 @@ import com.borymskyi.trail.repository.TrailRepository;
 import com.borymskyi.trail.service.TrailService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,11 +33,17 @@ public class TrailServiceImpl implements TrailService {
 
     private TrailRepository trailRepository;
     private UserRepository userRepository;
+    @Value("${app.services.greeting.message}")
+    private String greeting;
 
     @Autowired
     public TrailServiceImpl(TrailRepository trailRepository, UserRepository profileRepository) {
         this.trailRepository = trailRepository;
         this.userRepository = profileRepository;
+    }
+
+    public String greeting() {
+        return greeting;
     }
 
     @Override
@@ -108,11 +115,11 @@ public class TrailServiceImpl implements TrailService {
         userResponse.getRoles().stream().map(element ->
                 rolesUserRequest.add(element.getName())).collect(Collectors.toList());
 
-        if (trailRepository.findById(idTrail).get().getUser().getUserId().equals(userResponse.getId()) || rolesUserRequest.contains("ROLE_ADMIN")) {
+        if (trailRepository.findById(idTrail).get().getUser().getUser_id().equals(userResponse.getId()) || rolesUserRequest.contains("ROLE_ADMIN")) {
             return true;
         } else {
             log.error("Bad request. " +
-                    "Trail userId=" + trailRepository.findById(idTrail).get().getUser().getUserId() +
+                    "Trail userId=" + trailRepository.findById(idTrail).get().getUser().getUser_id() +
                     " Incoming userId=" + userResponse.getId() + " Roles incoming user=" + rolesUserRequest);
             return false;
         }

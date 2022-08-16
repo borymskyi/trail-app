@@ -2,7 +2,6 @@ package com.borymskyi.trail.config.jwt;
 
 import com.borymskyi.trail.domain.Users;
 import com.borymskyi.trail.service.UserService;
-import com.borymskyi.trail.service.impl.UserDetailImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;

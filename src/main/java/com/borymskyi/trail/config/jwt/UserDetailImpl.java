@@ -1,4 +1,4 @@
-package com.borymskyi.trail.service.impl;
+package com.borymskyi.trail.config.jwt;
 
 import com.borymskyi.trail.domain.Users;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -39,7 +39,7 @@ public class UserDetailImpl implements UserDetails {
                 .collect(Collectors.toList());
 
         return new UserDetailImpl(
-                profile.getUserId(),
+                profile.getUser_id(),
                 profile.getUsername(),
                 profile.getPassword(),
                 authorities
@@ -104,12 +104,4 @@ public class UserDetailImpl implements UserDetails {
     public List<String> getListRoles() {
         return authorities.stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList());
     }
-
-
-
-
-
-
-
-
 }

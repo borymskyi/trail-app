@@ -14,14 +14,15 @@ import javax.persistence.*;
  */
 
 @Entity
+@Table(name = "roles")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class Roles {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long roleId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long role_id;
 
     @Column(unique = true, nullable = false)
     private String name;

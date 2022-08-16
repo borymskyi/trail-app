@@ -1,7 +1,6 @@
 package com.borymskyi.trail.config.jwt;
 
 import com.borymskyi.trail.pojo.JwtResponse;
-import com.borymskyi.trail.service.impl.UserDetailImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;

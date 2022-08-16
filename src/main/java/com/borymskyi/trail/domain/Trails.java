@@ -17,14 +17,15 @@ import java.time.LocalDateTime;
  */
 
 @Entity
+@Table(name = "trails")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class Trails {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long trailId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long trail_id;
 
     private String title;
 
@@ -32,7 +33,7 @@ public class Trails {
     private LocalDateTime update_time;
 
     @ManyToOne
-    @JoinColumn(name = "users")
+    @JoinColumn(name = "users_user_id")
     @JsonIgnore
     private Users user;
 }

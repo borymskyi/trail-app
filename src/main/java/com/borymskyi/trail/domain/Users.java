@@ -1,6 +1,7 @@
 package com.borymskyi.trail.domain;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -16,14 +17,16 @@ import java.util.List;
  */
 
 @Entity
-@Data
+@Table(name = "users")
 @NoArgsConstructor
 @AllArgsConstructor
+@Data
+@Builder
 public class Users {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long userId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long user_id;
 
     @Column(unique = true, nullable = false)
     private String username;
@@ -34,18 +37,17 @@ public class Users {
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
     private List<Trails> trails;
 
+    @Builder.Default
     @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "Users_Roles",
+    @JoinTable(name = "users_roles",
             joinColumns = @JoinColumn(name = "user_id",
-                    referencedColumnName = "userId",
+                    referencedColumnName = "user_id",
                     foreignKey = @ForeignKey(name = "FK_USERS_ID", foreignKeyDefinition = "FOREIGN KEY (USER_ID) REFERENCES USERS ON DELETE CASCADE ON UPDATE CASCADE"),
-                    nullable = false,
-                    updatable = false),
+                    nullable = false),
             inverseJoinColumns = @JoinColumn(name = "role_id",
-                    referencedColumnName = "roleId",
+                    referencedColumnName = "role_id",
                     foreignKey = @ForeignKey(name = "FK_ROLES_ID", foreignKeyDefinition = "FOREIGN KEY (ROLE_ID) REFERENCES ROLES ON DELETE CASCADE ON UPDATE CASCADE"),
-                    nullable = false,
-                    updatable = false)
+                    nullable = false)
     )
     private List<Roles> roles = new ArrayList<>();
 }

@@ -6,7 +6,7 @@ import com.borymskyi.trail.config.jwt.JwtAuthTokenFilter;
 import com.borymskyi.trail.config.jwt.JwtUtils;
 import com.borymskyi.trail.pojo.*;
 import com.borymskyi.trail.service.UserService;
-import com.borymskyi.trail.service.impl.UserDetailImpl;
+import com.borymskyi.trail.config.jwt.UserDetailImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

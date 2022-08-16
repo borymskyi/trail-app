@@ -4,7 +4,6 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.borymskyi.trail.service.impl.UserDetailImpl;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.core.GrantedAuthority;
@@ -13,11 +12,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 import java.util.stream.Collectors;
-
-import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 /**
  * Util class that provides methods for generation, validation, etc. of JWT token.
