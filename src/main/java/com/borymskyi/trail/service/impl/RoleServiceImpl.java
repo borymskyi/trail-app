@@ -31,8 +31,10 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public Roles saveRole(RolePojo roleRequest) {
         if (!roleRequest.getName().equals("") && roleRequest.getName() != null) {
+            Roles role = new Roles(null, roleRequest.getName());
+            roleRepository.save(role);
             log.info("Role with name=" + roleRequest.getName() + " is created.");
-            return roleRepository.save(new Roles(null, roleRequest.getName()));
+            return role;
         } else {
             log.error("Bad request. RoleName=" + roleRequest.getName());
             throw new RuntimeException("Bad request");

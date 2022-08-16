@@ -39,7 +39,7 @@ class TrailServiceImplTest extends IntegrationTestBase {
     @Test
     void testCreateTrail() {
         Trails trail = trailService.createTrail(
-                new TrailRequest("Programming 8h"), 1L);
+                new TrailRequest("Programming 8h"), 2L);
         assertNotEquals(null, trail.getTrail_id());
     }
 
@@ -47,9 +47,9 @@ class TrailServiceImplTest extends IntegrationTestBase {
     void testGetTrailWithAdminRole() {
         List<Roles> roles = new ArrayList<>();
         roles.add(new Roles(2L, "ROLE_ADMIN"));
-        UserPojo userPojo = new UserPojo(1L, "Admin", roles);
+        UserPojo userPojo = new UserPojo(2L, "Admin", roles);
 
-        Trails trail = trailService.getTrail(1L, userPojo);
+        Trails trail = trailService.getTrail(2L, userPojo);
         assertNotEquals(null, trail.getTrail_id());
     }
 
@@ -57,9 +57,9 @@ class TrailServiceImplTest extends IntegrationTestBase {
     void testGetTrailWithUserRole() {
         List<Roles> roles = new ArrayList<>();
         roles.add(new Roles(1L, "ROLE_USER"));
-        UserPojo userPojo = new UserPojo(2L, "Test", roles);
+        UserPojo userPojo = new UserPojo(3L, "Test", roles);
 
-        Trails trail = trailService.getTrail(1L, userPojo);
+        Trails trail = trailService.getTrail(2L, userPojo);
         assertNotEquals(null, trail.getTrail_id());
     }
 
@@ -67,9 +67,9 @@ class TrailServiceImplTest extends IntegrationTestBase {
     void testEditTrailWithAdminRole() {
         List<Roles> roles = new ArrayList<>();
         roles.add(new Roles(2L, "ROLE_ADMIN"));
-        UserPojo userPojo = new UserPojo(1L, "Admin", roles);
+        UserPojo userPojo = new UserPojo(2L, "Admin", roles);
 
-        Trails trail = trailService.editTrail(new TrailRequest("English 5h"), 1L, userPojo);
+        Trails trail = trailService.editTrail(new TrailRequest("English 5h"), 2L, userPojo);
         assertEquals("English 5h", trail.getTitle());
     }
 
@@ -77,9 +77,9 @@ class TrailServiceImplTest extends IntegrationTestBase {
     void testEditTrailWithUserRole() {
         List<Roles> roles = new ArrayList<>();
         roles.add(new Roles(2L, "ROLE_USER"));
-        UserPojo userPojo = new UserPojo(2L, "Test", roles);
+        UserPojo userPojo = new UserPojo(3L, "Test", roles);
 
-        Trails trail = trailService.editTrail(new TrailRequest("English 5h"), 1L, userPojo);
+        Trails trail = trailService.editTrail(new TrailRequest("English 5h"), 2L, userPojo);
         assertEquals("English 5h", trail.getTitle());
     }
 
@@ -87,9 +87,9 @@ class TrailServiceImplTest extends IntegrationTestBase {
     void testUpdateDateTrailWithAdminRole() {
         List<Roles> roles = new ArrayList<>();
         roles.add(new Roles(2L, "ROLE_ADMIN"));
-        UserPojo userPojo = new UserPojo(1L, "Admin", roles);
+        UserPojo userPojo = new UserPojo(2L, "Admin", roles);
 
-        Trails trail = trailService.updateDateTrail(1L, userPojo);
+        Trails trail = trailService.updateDateTrail(2L, userPojo);
         assertNotEquals("2022-08-16T15:59:10.902", trail.getUpdate_time().toString());
     }
 
@@ -97,9 +97,9 @@ class TrailServiceImplTest extends IntegrationTestBase {
     void testUpdateDateTrailWithUserRole() {
         List<Roles> roles = new ArrayList<>();
         roles.add(new Roles(1L, "ROLE_USER"));
-        UserPojo userPojo = new UserPojo(2L, "Test", roles);
+        UserPojo userPojo = new UserPojo(3L, "Test", roles);
 
-        Trails trail = trailService.updateDateTrail(1L, userPojo);
+        Trails trail = trailService.updateDateTrail(2L, userPojo);
         assertNotEquals("2022-08-16T15:59:10.902", trail.getUpdate_time().toString());
     }
 
@@ -107,17 +107,17 @@ class TrailServiceImplTest extends IntegrationTestBase {
     void testDeleteTrailWithAdminRole() {
         List<Roles> roles = new ArrayList<>();
         roles.add(new Roles(2L, "ROLE_ADMIN"));
-        UserPojo userPojo = new UserPojo(1L, "Admin", roles);
+        UserPojo userPojo = new UserPojo(2L, "Admin", roles);
 
-        assertNotEquals(false, trailService.deleteTrail(1L, userPojo));
+        assertNotEquals(false, trailService.deleteTrail(2L, userPojo));
     }
 
     @Test
     void testDeleteTrailWithUserRole() {
         List<Roles> roles = new ArrayList<>();
         roles.add(new Roles(1L, "ROLE_USER"));
-        UserPojo userPojo = new UserPojo(2L, "Test", roles);
+        UserPojo userPojo = new UserPojo(3L, "Test", roles);
 
-        assertNotEquals(false, trailService.deleteTrail(1L, userPojo));
+        assertNotEquals(false, trailService.deleteTrail(2L, userPojo));
     }
 }

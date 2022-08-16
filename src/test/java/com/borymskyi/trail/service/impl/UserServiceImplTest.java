@@ -29,7 +29,7 @@ public class UserServiceImplTest extends IntegrationTestBase {
 
     @Test
     void testCreateUser() {
-        SignupRequest signupRequest = new SignupRequest("Test", "qwerty");
+        SignupRequest signupRequest = new SignupRequest("Test2", "qwerty");
         Users user = userServiceImpl.createUser(signupRequest);
         assertNotEquals(null, user.getUser_id());
     }
