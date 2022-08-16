@@ -33,17 +33,11 @@ public class TrailServiceImpl implements TrailService {
 
     private TrailRepository trailRepository;
     private UserRepository userRepository;
-    @Value("${app.services.greeting.message}")
-    private String greeting;
 
     @Autowired
     public TrailServiceImpl(TrailRepository trailRepository, UserRepository profileRepository) {
         this.trailRepository = trailRepository;
         this.userRepository = profileRepository;
-    }
-
-    public String greeting() {
-        return greeting;
     }
 
     @Override
@@ -100,11 +94,12 @@ public class TrailServiceImpl implements TrailService {
     }
 
     @Override
-    public void deleteTrail(Long idTrail, UserPojo userResponse) {
+    public boolean deleteTrail(Long idTrail, UserPojo userResponse) {
         Trails trails = trailRepository.findById(idTrail).orElseThrow(NotFoundException::new);
         if (checkRolesIncomingUser(idTrail, userResponse)) {
             trailRepository.deleteById(idTrail);
             log.info("Trail with id: " + idTrail + " is removed.");
+            return !trailRepository.findById(trails.getTrail_id()).isPresent();
         } else {
             throw new RuntimeException("Bad request");
         }

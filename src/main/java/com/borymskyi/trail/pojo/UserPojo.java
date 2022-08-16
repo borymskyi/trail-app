@@ -20,6 +20,15 @@ public class UserPojo {
     private List<Trails> trails;
     private List<Roles> roles;
 
+    public UserPojo() {
+    }
+
+    public UserPojo(Long id, String username, List<Roles> roles) {
+        this.id = id;
+        this.username = username;
+        this.roles = roles;
+    }
+
     public UserPojo(Long id, String username, List<Trails> trails, List<Roles> roles) {
         this.id = id;
         this.username = username;

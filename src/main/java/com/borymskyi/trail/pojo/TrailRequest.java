@@ -8,6 +8,13 @@ public class TrailRequest {
 
     String title;
 
+    public TrailRequest() {
+    }
+
+    public TrailRequest(String title) {
+        this.title = title;
+    }
+
     public String getTitle() {
         return title;
     }

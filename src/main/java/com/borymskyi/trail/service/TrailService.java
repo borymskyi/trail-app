@@ -21,5 +21,5 @@ public interface TrailService {
 
     Trails updateDateTrail(Long idTrail, UserPojo userResponse);
 
-    void deleteTrail(Long idTrail, UserPojo userResponse);
+    boolean deleteTrail(Long idTrail, UserPojo userResponse);
 }
